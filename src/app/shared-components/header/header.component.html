@@ -1,0 +1,66 @@
+<p-menubar [model]="appMenuItems">
+  <ng-template #item let-item>
+    <a
+      class="flex items-center p-menu-item-link"
+      [routerLink]="item.routerLink"
+    >
+      <span [class]="item.icon"></span>
+      <span class="ms-2">{{ item.label }}</span>
+    </a>
+  </ng-template>
+
+  <ng-container *ngIf="!(loggedInUser$ | async)">
+    <p-button
+      class="me-2"
+      label="Sign Up"
+      [routerLink]="['/sign-up']"
+      routerLinkActive="router-link-active"
+    ></p-button>
+    <p-button
+      label="Log In"
+      [routerLink]="['/log-in']"
+      routerLinkActive="router-link-active"
+    ></p-button>
+  </ng-container>
+
+  <ng-container *ngIf="loggedInUser$ | async as loggedInUser">
+    <div>
+      <p-avatar
+        (click)="menu.toggle($event)"
+        [label]="loggedInUser.firstName[0]"
+        [style]="{
+          'background-color': '#ece9fc',
+          color: 'bkack',
+          height: '40px',
+          width: '40px'
+        }"
+        shape="circle"
+      />
+      <p-menu
+        #menu
+        [model]="userMenuItems"
+        [popup]="true"
+        [style]="{ 'right': 0 }"
+        >
+        <ng-template #item let-item>
+          <a
+            pRipple
+            class="flex items-center p-menu-item-link"
+            [routerLink]="item.routerLink"
+          >
+            <span [class]="item.icon"></span>
+            <span class="ml-2">{{ item.label }}</span>
+          </a>
+        </ng-template>
+      </p-menu>
+    </div>
+  </ng-container>
+
+  
+  <div class="position-relative w-auto">
+    <p-dialog [(visible)]="isQRCodeDialogVisible" [modal]="true" [styleClass]="'w-75'" [style]="{'max-width': '500px'}">
+      <img [src]="qrCodeImagegLink" style="width: -webkit-fill-available;">
+    </p-dialog>
+  </div>
+
+</p-menubar>
