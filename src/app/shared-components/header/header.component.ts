@@ -7,7 +7,7 @@ import { Avatar } from "primeng/avatar";
 import { Menu } from "primeng/menu";
 import { Dialog } from "primeng/dialog";
 import { RouterLink } from "@angular/router";
-import { LOGGEDIN_USER_KEY } from "../../constants/localStorage.constants";
+import { LOGGEDIN_USER_KEY } from "../../constants/cookie.constant";
 import { Observable } from "rxjs";
 import { UserService } from "../../services/user.service";
 import { CookieService } from "ngx-cookie-service";

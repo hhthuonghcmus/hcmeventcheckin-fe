@@ -7,7 +7,7 @@ import {
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
-import { LOGGEDIN_USER_KEY } from '../constants/localStorage.constants';
+import { LOGGEDIN_USER_KEY } from '../constants/cookie.constant';
 import { User } from '../interfaces/user.interface';
 
 @Injectable()

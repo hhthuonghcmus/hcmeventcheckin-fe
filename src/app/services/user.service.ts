@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { API_BASE_URL } from '../constants/api.constants';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { User } from '../interfaces/user.interface';
 import { CookieService } from 'ngx-cookie-service';
+import { API_BASE_URL } from '../constants/api.constant';
 
 @Injectable({
   providedIn: 'root',

@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/user.service';
 import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
-import { LOGGEDIN_USER_KEY } from '../../constants/localStorage.constants';
+import { LOGGEDIN_USER_KEY } from '../../constants/cookie.constant';
 import { CookieService } from 'ngx-cookie-service';
 
 @Component({
