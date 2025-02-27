@@ -1,6 +1,7 @@
 <p-menubar [model]="appMenuItems">
   <ng-template #item let-item>
     <a
+      pRipple
       class="flex items-center p-menu-item-link"
       [routerLink]="item.routerLink"
     >
@@ -9,7 +10,7 @@
     </a>
   </ng-template>
 
-  <ng-container *ngIf="!(loggedInUser$ | async)">
+  <ng-container *ngIf="!isLoading && !(loggedInUser$ | async)">
     <p-button
       class="me-2"
       label="Sign Up"
@@ -40,8 +41,8 @@
         #menu
         [model]="userMenuItems"
         [popup]="true"
-        [style]="{ 'right': 0 }"
-        >
+        [style]="{ right: 0 }"
+      >
         <ng-template #item let-item>
           <a
             pRipple
@@ -56,11 +57,18 @@
     </div>
   </ng-container>
 
-  
   <div class="position-relative w-auto">
-    <p-dialog [(visible)]="isQRCodeDialogVisible" [modal]="true" [styleClass]="'w-75'" [style]="{'max-width': '500px'}">
-      <img [src]="qrCodeImagegLink" style="width: -webkit-fill-available;">
+    <p-dialog
+      [(visible)]="isQRCodeDialogVisible"
+      [modal]="true"
+      [styleClass]="'w-75'"
+      [style]="{ 'max-width': '500px' }"
+    >
+      <img
+        *ngIf="qrCodePngImageLink$ | async as qrCodePngImageLink"
+        [src]="qrCodePngImageLink.data"
+        style="width: -webkit-fill-available"
+      />
     </p-dialog>
   </div>
-
 </p-menubar>

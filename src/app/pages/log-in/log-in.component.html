@@ -1,68 +1,68 @@
 <div class="container">
   <div class="row d-flex justify-content-center align-items-center">
-      <form
-        class="col-10 col-sm-5 col-md-4 col-lg-3 rounded p-3 d-grid gap-2"
-        [formGroup]="loginForm"
-        (ngSubmit)="onSubmit()"
-      >
-        <p-inputgroup>
-          <p-inputgroup-addon>
-            <i class="pi pi-phone"></i>
-          </p-inputgroup-addon>
-          <p-floatlabel variant="in">
-            <input
-              pInputText
-              formControlName="phoneNumber"
-              class="w-100"
-              id="phoneNumber"
-              pSize="large"
-            />
-            <label for="phoneNumber">Phone Number</label>
-          </p-floatlabel>
-        </p-inputgroup>
+    <form
+      class="col-10 col-sm-7 col-lg-4 rounded p-3 d-grid gap-2"
+      [formGroup]="loginForm"
+      (ngSubmit)="onSubmit()"
+    >
+      <p-inputgroup>
+        <p-inputgroup-addon>
+          <i class="pi pi-phone"></i>
+        </p-inputgroup-addon>
+        <p-floatlabel variant="in">
+          <input
+            pInputText
+            formControlName="phoneNumber"
+            class="w-100"
+            id="phoneNumber"
+            pSize="large"
+          />
+          <label for="phoneNumber">Phone Number</label>
+        </p-floatlabel>
+      </p-inputgroup>
 
-        <div class="text-danger">
-          <small *ngIf="loginForm.get('phoneNumber')?.hasError('required')"
-            >Phone Number is required.</small
-          >
-          <small *ngIf="loginForm.get('phoneNumber')?.hasError('pattern')"
-            >Phone Number must be 10 - 11 digits.</small
-          >
-        </div>
-
-        <p-inputgroup>
-          <p-inputgroup-addon>
-            <i class="pi pi-lock"></i>
-          </p-inputgroup-addon>
-          <p-floatlabel variant="in">
-            <input
-              class="w-100"
-              type="password"
-              pInputText
-              formControlName="password"
-              pSize="large"
-            />
-            <label>Password</label>
-          </p-floatlabel>
-        </p-inputgroup>
-
-        <div class="text-danger">
-          <small *ngIf="loginForm.get('password')?.hasError('minlength')"
-            >Password must be atleast 8 characters</small
-          >
-          <small *ngIf="loginForm.get('password')?.hasError('required')"
-            >Password is required.</small
-          >
-        </div>
-
-        <p-button
-          fluid="true"
-          class="text-center w-100"
-          type="submit"
-          label="Log In"
-          [disabled]="loginForm.invalid"
+      <div class="text-danger">
+        <small *ngIf="loginForm.get('phoneNumber')?.hasError('required')"
+          >Phone Number is required.</small
         >
-        </p-button>
-      </form>
+        <small *ngIf="loginForm.get('phoneNumber')?.hasError('pattern')"
+          >Phone Number must be 10 - 11 digits.</small
+        >
+      </div>
+
+      <p-inputgroup>
+        <p-inputgroup-addon>
+          <i class="pi pi-lock"></i>
+        </p-inputgroup-addon>
+        <p-floatlabel variant="in">
+          <input
+            class="w-100"
+            type="password"
+            pInputText
+            formControlName="password"
+            pSize="large"
+          />
+          <label>Password</label>
+        </p-floatlabel>
+      </p-inputgroup>
+
+      <div class="text-danger">
+        <small *ngIf="loginForm.get('password')?.hasError('minlength')"
+          >Password must be atleast 8 characters</small
+        >
+        <small *ngIf="loginForm.get('password')?.hasError('required')"
+          >Password is required.</small
+        >
+      </div>
+
+      <p-button
+        fluid="true"
+        class="text-center w-100"
+        type="submit"
+        label="Log In"
+        [disabled]="loginForm.invalid"
+      >
+      </p-button>
+    </form>
   </div>
 </div>

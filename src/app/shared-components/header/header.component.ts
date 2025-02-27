@@ -1,89 +1,95 @@
-import { CommonModule } from "@angular/common";
-import { Component, OnInit } from "@angular/core";
-import { MenuItem } from "primeng/api";
-import { Menubar } from "primeng/menubar";
-import { Button } from "primeng/button";
-import { Avatar } from "primeng/avatar";
-import { Menu } from "primeng/menu";
-import { Dialog } from "primeng/dialog";
-import { RouterLink } from "@angular/router";
-import { LOGGEDIN_USER_KEY } from "../../constants/cookie.constant";
-import { Observable } from "rxjs";
-import { UserService } from "../../services/user.service";
-import { CookieService } from "ngx-cookie-service";
-import { User } from "../../interfaces/user.interface";
+import { CommonModule } from '@angular/common';
+import { Component, OnInit, signal } from '@angular/core';
+import { MenuItem } from 'primeng/api';
+import { Menubar } from 'primeng/menubar';
+import { Button } from 'primeng/button';
+import { Avatar } from 'primeng/avatar';
+import { Menu } from 'primeng/menu';
+import { Dialog } from 'primeng/dialog';
+import { Router, RouterLink } from '@angular/router';
+import { LOGGEDIN_USER_KEY } from '../../constants/cookie.constant';
+import { Observable } from 'rxjs';
+import { UserService } from '../../services/user.service';
+import { CookieService } from 'ngx-cookie-service';
+import { User } from '../../interfaces/user.interface';
+import { ApiReponse } from '../../interfaces/api-response.interface';
+import { AppService } from '../../services/app.service';
 
 @Component({
-  selector: "app-header",
+  selector: 'app-header',
   imports: [CommonModule, Avatar, Menu, Menubar, Button, Dialog, RouterLink],
-  templateUrl: "./header.component.html",
-  styleUrl: "./header.component.scss",
+  templateUrl: './header.component.html',
+  styleUrl: './header.component.scss',
 })
 export class HeaderComponent implements OnInit {
   appMenuItems: MenuItem[] = [];
-  isLoggedIn$: Observable<boolean>;
   loggedInUser$: Observable<User>;
-  qrCodeImagegLink: string = "";
-  isQRCodeDialogVisible: boolean = false;
-  username: string = "";
+  isQRCodeDialogVisible = false;
   userMenuItems: MenuItem[] = [];
+  qrCodePngImageLink$: Observable<ApiReponse>;
+  isLoading = true;
+  
   constructor(
     private cookieService: CookieService,
-    private userService: UserService
-  ) {}
+    private userService: UserService,
+    private router: Router
+  ) {
+  }
 
   ngOnInit() {
     this.appMenuItems = [
       {
-        label: "Home",
-        icon: "pi pi-home",
-        routerLink: "/",
+        label: 'Home',
+        icon: 'pi pi-home',
+        routerLink: '/',
       },
     ];
 
     this.userMenuItems = [
       {
-        label: "Settings",
-        icon: "pi pi-cog",
-        routerLink: "/settings",
+        label: 'Settings',
+        icon: 'pi pi-cog',
+        routerLink: '/settings',
       },
       {
-        label: "Get QR Code",
-        icon: "pi pi-qrcode",
-        command: () => this.getQrCode(),
+        label: 'Get QR Code',
+        icon: 'pi pi-qrcode',
+        command: () => this.getQrCodePngImageLink(),
       },
       {
-        label: "Log Out",
-        icon: "pi pi-sign-out",
+        label: 'Sign Out',
+        icon: 'pi pi-sign-out',
         command: () => this.logOut(),
       },
     ];
 
     this.loggedInUser$ = this.userService.loggedInUser$.asObservable();
-    const userCookie = this.cookieService.get(LOGGEDIN_USER_KEY);
-    if (userCookie) {
-      const user = JSON.parse(userCookie);
-      if (user) {
-        this.userService.loggedInUser$.next(user);
-      }
-    }
   }
 
-  getQrCode() {
-    this.isQRCodeDialogVisible =true;
-    this.userService.getQrCode().subscribe((response) => {
-      this.qrCodeImagegLink = "data:image/png;base64," + response["data"];
-    });
+  getQrCodePngImageLink() {
+    this.isQRCodeDialogVisible = true;
+    this.qrCodePngImageLink$ = this.userService.getQrCodePngImageLink();
   }
 
   logOut() {
     this.cookieService.delete(LOGGEDIN_USER_KEY);
     this.userService.loggedInUser$.next(null);
+    this.router.navigate['/'];
   }
 
-  convertBytesToImage(byteArray: Uint8Array) {
-    const blob = new Blob([byteArray], { type: "image/png" });
+  isLoggedIn() {
+    const userCookie = this.cookieService.get(LOGGEDIN_USER_KEY);
+    this.isLoading = false;
+    if (!userCookie) {
+      return false;
+    }
 
-    return URL.createObjectURL(blob);
+    const user = JSON.parse(userCookie);
+    if (user) {
+      this.userService.loggedInUser$.next(user);
+      return true;
+    }
+
+    return false;
   }
 }

@@ -16,6 +16,7 @@ import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { LOGGEDIN_USER_KEY } from '../../constants/cookie.constant';
 import { CookieService } from 'ngx-cookie-service';
+import { User } from '../../interfaces/user.interface';
 
 @Component({
   selector: 'app-log-in',
@@ -51,10 +52,10 @@ export class LogInComponent {
             expiresDate.setDate(expiresDate.getDate() + 1);
             this.cookieService.set(
               LOGGEDIN_USER_KEY,
-              JSON.stringify(response['data']),
+              JSON.stringify(response.data),
               expiresDate
             );
-            this.userService.loggedInUser$.next(response['data']);
+            this.userService.loggedInUser$.next(response.data as User);
             this.router.navigate(['/']);
           } else {
             this.messageService.add({
