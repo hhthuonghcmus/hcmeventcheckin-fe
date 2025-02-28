@@ -1,16 +1,16 @@
 <p-menubar [model]="appMenuItems">
-  <ng-template #item let-item>
+  <ng-template #appMenuItem let-appMenuItem>
     <a
       pRipple
       class="flex items-center p-menu-item-link"
-      [routerLink]="item.routerLink"
+      [routerLink]="appMenuItem.routerLink"
     >
-      <span [class]="item.icon"></span>
-      <span class="ms-2">{{ item.label }}</span>
+      <span [class]="appMenuItem.icon"></span>
+      <span class="ms-2">{{ appMenuItem.label }}</span>
     </a>
   </ng-template>
 
-  <ng-container *ngIf="!isLoading && !(loggedInUser$ | async)">
+  <div *ngIf="!isLoggedIn">
     <p-button
       class="me-2"
       label="Sign Up"
@@ -22,40 +22,33 @@
       [routerLink]="['/log-in']"
       routerLinkActive="router-link-active"
     ></p-button>
-  </ng-container>
+  </div>
 
-  <ng-container *ngIf="loggedInUser$ | async as loggedInUser">
-    <div>
-      <p-avatar
-        (click)="menu.toggle($event)"
-        [label]="loggedInUser.firstName[0]"
-        [style]="{
-          'background-color': '#ece9fc',
-          color: 'bkack',
-          height: '40px',
-          width: '40px'
-        }"
-        shape="circle"
-      />
-      <p-menu
-        #menu
-        [model]="userMenuItems"
-        [popup]="true"
-        [style]="{ right: 0 }"
-      >
-        <ng-template #item let-item>
-          <a
-            pRipple
-            class="flex items-center p-menu-item-link"
-            [routerLink]="item.routerLink"
-          >
-            <span [class]="item.icon"></span>
-            <span class="ml-2">{{ item.label }}</span>
-          </a>
-        </ng-template>
-      </p-menu>
-    </div>
-  </ng-container>
+  <div *ngIf="isLoggedIn">
+    <p-avatar
+      (click)="menu.toggle($event)"
+      [label]="loggedInUser.firstName[0]"
+      [style]="{
+        'background-color': '#ece9fc',
+        color: 'bkack',
+        height: '40px',
+        width: '40px'
+      }"
+      shape="circle"
+    />
+    <p-menu #menu [model]="userMenuItems" [popup]="true" [style]="{ right: 0 }">
+      <ng-template #userMenuItem let-userMenuItem>
+        <a
+          pRipple
+          class="flex items-center p-menu-item-link"
+          [routerLink]="userMenuItem.routerLink"
+        >
+          <span [class]="userMenuItem.icon"></span>
+          <span class="ml-2">{{ userMenuItem.label }}</span>
+        </a>
+      </ng-template>
+    </p-menu>
+  </div>
 
   <div class="position-relative w-auto">
     <p-dialog
@@ -63,6 +56,8 @@
       [modal]="true"
       [styleClass]="'w-75'"
       [style]="{ 'max-width': '500px' }"
+      [dismissableMask]="true"
+      [resizable]="false"
     >
       <img
         *ngIf="qrCodePngImageLink$ | async as qrCodePngImageLink"

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, signal } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { Menubar } from 'primeng/menubar';
 import { Button } from 'primeng/button';
@@ -7,13 +7,10 @@ import { Avatar } from 'primeng/avatar';
 import { Menu } from 'primeng/menu';
 import { Dialog } from 'primeng/dialog';
 import { Router, RouterLink } from '@angular/router';
-import { LOGGEDIN_USER_KEY } from '../../constants/cookie.constant';
-import { Observable } from 'rxjs';
+import { finalize, Observable } from 'rxjs';
 import { UserService } from '../../services/user.service';
-import { CookieService } from 'ngx-cookie-service';
 import { User } from '../../interfaces/user.interface';
 import { ApiReponse } from '../../interfaces/api-response.interface';
-import { AppService } from '../../services/app.service';
 
 @Component({
   selector: 'app-header',
@@ -21,22 +18,28 @@ import { AppService } from '../../services/app.service';
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent {
   appMenuItems: MenuItem[] = [];
-  loggedInUser$: Observable<User>;
+  loggedInUser: User;
+  isLoggedIn: boolean;
   isQRCodeDialogVisible = false;
   userMenuItems: MenuItem[] = [];
-  qrCodePngImageLink$: Observable<ApiReponse>;
-  isLoading = true;
-  
-  constructor(
-    private cookieService: CookieService,
-    private userService: UserService,
-    private router: Router
-  ) {
+  qrCodePngImageLink$: Observable<ApiReponse> = null;
+
+  constructor(private userService: UserService, private router: Router, private cdRef: ChangeDetectorRef) {
+   
   }
 
   ngOnInit() {
+    this.loggedInUser = this.userService.getLoggedInUser();
+    if (this.loggedInUser !== null) {
+      this.isLoggedIn = true;
+      this.cdRef.detectChanges()
+    }
+    else {
+      this.isLoggedIn = false;
+    }
+    
     this.appMenuItems = [
       {
         label: 'Home',
@@ -59,11 +62,9 @@ export class HeaderComponent implements OnInit {
       {
         label: 'Sign Out',
         icon: 'pi pi-sign-out',
-        command: () => this.logOut(),
+        command: () => this.signOut(),
       },
     ];
-
-    this.loggedInUser$ = this.userService.loggedInUser$.asObservable();
   }
 
   getQrCodePngImageLink() {
@@ -71,25 +72,14 @@ export class HeaderComponent implements OnInit {
     this.qrCodePngImageLink$ = this.userService.getQrCodePngImageLink();
   }
 
-  logOut() {
-    this.cookieService.delete(LOGGEDIN_USER_KEY);
-    this.userService.loggedInUser$.next(null);
-    this.router.navigate['/'];
-  }
-
-  isLoggedIn() {
-    const userCookie = this.cookieService.get(LOGGEDIN_USER_KEY);
-    this.isLoading = false;
-    if (!userCookie) {
-      return false;
-    }
-
-    const user = JSON.parse(userCookie);
-    if (user) {
-      this.userService.loggedInUser$.next(user);
-      return true;
-    }
-
-    return false;
+  signOut() {
+    this.userService.signOut().subscribe({
+      next: (response) => {
+        window.location.href = '/'; 
+      },
+      error: (error) => {
+        window.location.href = '/'; 
+      },
+    });
   }
 }

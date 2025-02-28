@@ -17,7 +17,15 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sign-up',
-  imports: [CommonModule, Button, InputText, InputGroup, InputGroupAddon, ReactiveFormsModule, FloatLabel],
+  imports: [
+    CommonModule,
+    Button,
+    InputText,
+    InputGroup,
+    InputGroupAddon,
+    ReactiveFormsModule,
+    FloatLabel,
+  ],
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.scss',
 })
@@ -30,6 +38,13 @@ export class SignUpComponent {
     private messageService: MessageService,
     private router: Router
   ) {
+    const loggedInUser = this.userService.getLoggedInUser();
+    if (loggedInUser) {
+      this.router.navigate(['/'])
+    }
+  }
+
+  ngOnInit() {
     this.signUpForm = this.formBuilder.group(
       {
         phoneNumber: [

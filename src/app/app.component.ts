@@ -1,5 +1,5 @@
 import { AppService } from './services/app.service';
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { FooterComponent } from './shared-components/footer/footer.component';
 import { HeaderComponent } from './shared-components/header/header.component';
@@ -26,20 +26,17 @@ import { CommonModule } from '@angular/common';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   providers: [MessageService, CookieService],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
   title = 'Event Check In';
-  isLoading$: Observable<boolean>;
   
   constructor(
     private primeng: PrimeNG,
-    private appService: AppService,
-    private changeDetectorRef: ChangeDetectorRef
+    public appService: AppService,
   ) {}
 
   ngOnInit() {
-    this.isLoading$ = this.appService.isLoading$;
-    this.changeDetectorRef.detectChanges();
     this.primeng.ripple.set(true);
   }
 }
