@@ -69,6 +69,7 @@ export class LogInComponent {
               JSON.stringify(response.data),
               expiresDate
             );
+            
             window.location.href = '/'; 
           } else {
             this.messageService.add({

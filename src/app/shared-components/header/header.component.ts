@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { Menubar } from 'primeng/menubar';
 import { Button } from 'primeng/button';
@@ -25,21 +31,11 @@ export class HeaderComponent {
   isQRCodeDialogVisible = false;
   userMenuItems: MenuItem[] = [];
   qrCodePngImageLink$: Observable<ApiReponse> = null;
+  loggInUserRole: string;
 
-  constructor(private userService: UserService, private router: Router, private cdRef: ChangeDetectorRef) {
-   
-  }
+  constructor(private userService: UserService) {}
 
   ngOnInit() {
-    this.loggedInUser = this.userService.getLoggedInUser();
-    if (this.loggedInUser !== null) {
-      this.isLoggedIn = true;
-      this.cdRef.detectChanges()
-    }
-    else {
-      this.isLoggedIn = false;
-    }
-    
     this.appMenuItems = [
       {
         label: 'Home',
@@ -55,6 +51,11 @@ export class HeaderComponent {
         routerLink: '/settings',
       },
       {
+        label: 'Question Pools',
+        icon: 'pi pi-list',
+        routerLink: '/settings',
+      },
+      {
         label: 'Get QR Code',
         icon: 'pi pi-qrcode',
         command: () => this.getQrCodePngImageLink(),
@@ -65,6 +66,22 @@ export class HeaderComponent {
         command: () => this.signOut(),
       },
     ];
+
+    this.loggedInUser = this.userService.getLoggedInUser();
+    if (this.loggedInUser === null) {
+      this.isLoggedIn = false;
+    } else {
+      this.isLoggedIn = true;
+      
+      const role = this.userService.getLoggedInUserRole();
+      if (role === 'Admin') {
+        this.appMenuItems = [...this.appMenuItems, {
+          label: 'Question Pools',
+          icon: 'pi pi-list',
+          routerLink: '/question-pools',
+        }];
+      }
+    }
   }
 
   getQrCodePngImageLink() {
@@ -73,12 +90,13 @@ export class HeaderComponent {
   }
 
   signOut() {
+    this.userService.loggedInUserRole$.next('');
     this.userService.signOut().subscribe({
       next: (response) => {
-        window.location.href = '/'; 
+        window.location.href = '/';
       },
       error: (error) => {
-        window.location.href = '/'; 
+        window.location.href = '/';
       },
     });
   }

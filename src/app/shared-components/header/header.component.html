@@ -1,13 +1,13 @@
 <p-menubar [model]="appMenuItems">
   <ng-template #appMenuItem let-appMenuItem>
-    <a
+    <button
       pRipple
       class="flex items-center p-menu-item-link"
       [routerLink]="appMenuItem.routerLink"
     >
       <span [class]="appMenuItem.icon"></span>
       <span class="ms-2">{{ appMenuItem.label }}</span>
-    </a>
+    </button>
   </ng-template>
 
   <div *ngIf="!isLoggedIn">

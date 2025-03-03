@@ -57,7 +57,13 @@
                   "maximumError": "8kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "fileReplacements": [
+                {
+                  "replace": "src/app/constants/api.constant.ts",
+                  "with": "src/app/constants/api.constant.prod.ts"
+                }
+              ]
             },
             "development": {
               "optimization": false,
