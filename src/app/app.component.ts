@@ -1,5 +1,10 @@
 import { AppService } from './services/app.service';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  PLATFORM_ID,
+} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { FooterComponent } from './shared-components/footer/footer.component';
 import { HeaderComponent } from './shared-components/header/header.component';
@@ -10,7 +15,7 @@ import { PrimeNG } from 'primeng/config';
 import { ProgressSpinner } from 'primeng/progressspinner';
 import { Dialog } from 'primeng/dialog';
 import { Observable } from 'rxjs';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -26,17 +31,25 @@ import { CommonModule } from '@angular/common';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   providers: [MessageService, CookieService],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
   title = 'Event Check In';
-  
+  isLoading = false;
+
   constructor(
     private primeng: PrimeNG,
-    public appService: AppService,
+    private appService: AppService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit() {
-    this.primeng.ripple.set(true);
+    if (isPlatformBrowser(this.platformId)) {
+      this.primeng.ripple.set(true);
+      this.appService.isLoading$.asObservable().subscribe((value) => {
+        this.isLoading = value;
+        console.log(this.isLoading);
+      });
+    }
   }
 }

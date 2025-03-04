@@ -14,7 +14,7 @@ export class TopicService {
     private cookieService: CookieService
   ) {}
 
-  getMyCreatedTopics() {
-    return this.httpClient.get<ApiReponse>(API_BASE_URL + 'topic/my-created-topics');
+  getMyTopics() {
+    return this.httpClient.get<ApiReponse>(API_BASE_URL + 'topic/get-my-created-topics');
   }
 }

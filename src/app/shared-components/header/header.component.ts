@@ -40,7 +40,7 @@ export class HeaderComponent {
       {
         label: 'Home',
         icon: 'pi pi-home',
-        routerLink: '/',
+        routerLink: '',
       },
     ];
 
@@ -48,12 +48,7 @@ export class HeaderComponent {
       {
         label: 'Settings',
         icon: 'pi pi-cog',
-        routerLink: '/settings',
-      },
-      {
-        label: 'Question Pools',
-        icon: 'pi pi-list',
-        routerLink: '/settings',
+        routerLink: 'settings',
       },
       {
         label: 'Get QR Code',
@@ -76,9 +71,9 @@ export class HeaderComponent {
       const role = this.userService.getLoggedInUserRole();
       if (role === 'Admin') {
         this.appMenuItems = [...this.appMenuItems, {
-          label: 'Question Pools',
+          label: 'My Topics',
           icon: 'pi pi-list',
-          routerLink: '/question-pools',
+          routerLink: 'my-topics',
         }];
       }
     }

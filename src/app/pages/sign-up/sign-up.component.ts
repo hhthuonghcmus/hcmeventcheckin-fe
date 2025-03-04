@@ -36,7 +36,7 @@ export class SignUpComponent {
     private formBuilder: FormBuilder,
     private userService: UserService,
     private messageService: MessageService,
-    private router: Router
+    private router: Router,
   ) {
     const loggedInUser = this.userService.getLoggedInUser();
     if (loggedInUser) {

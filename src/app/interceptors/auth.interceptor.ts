@@ -1,5 +1,5 @@
 import { AppService } from './../services/app.service';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import {
   HttpInterceptor,
   HttpRequest,
@@ -13,7 +13,10 @@ import { User } from '../interfaces/user.interface';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private cookieService: CookieService, private appService: AppService) {}
+  constructor(
+    private cookieService: CookieService,
+    private appService: AppService
+  ) {}
 
   intercept(
     req: HttpRequest<any>,
@@ -25,14 +28,14 @@ export class AuthInterceptor implements HttpInterceptor {
     if (userCookie) {
       const user = JSON.parse(userCookie) as User;
       req = req.clone({
-        headers: req.headers.set('Authorization', 'Bearer ' + user.accessToken)
+        headers: req.headers.set('Authorization', 'Bearer ' + user.accessToken),
       });
     }
 
     return next.handle(req).pipe(
-      finalize (() => {
+      finalize(() => {
         this.appService.isLoading$.next(false);
-      }) 
+      })
     );
   }
 }

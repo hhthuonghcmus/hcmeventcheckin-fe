@@ -7,5 +7,10 @@ import { Component } from '@angular/core';
   styleUrl: './home.component.scss'
 })
 export class HomeComponent {
+  constructor() {
+    console.log(2)
+  }
 
+  ngOnInit() {
+  }
 }

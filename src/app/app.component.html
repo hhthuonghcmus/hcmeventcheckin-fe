@@ -3,7 +3,7 @@
   [modal]="true"
   [styleClass]="'h-auto w-auto bg-transparent border-0 shadow-none'"
   [style]="{ 'max-width': '500px' }"
-  *ngIf="appService.isLoading$ | async"
+      [(visible)]="isLoading"
 >
   <p-progress-spinner
     strokeWidth="8"
@@ -18,7 +18,7 @@
 <app-header></app-header>
 
 <div class="container-fluid app-container d-grid">
-  <router-outlet></router-outlet>
+  <router-outlet/>
 </div>
 
 <app-footer></app-footer>

@@ -9,20 +9,8 @@ import { MenuItem } from 'primeng/api';
 })
 export class FooterComponent {
   constructor() {}
-  items: MenuItem[] = [];
-  isLoggedIn: boolean = false;
-  username: string = '';
 
   ngOnInit() {
-    this.items = [
-      {
-        label: 'Home',
-        icon: 'pi pi-home',
-      },
-      {
-        label: 'Features',
-        icon: 'pi pi-star',
-      },
-    ];
+    
   }
 }
