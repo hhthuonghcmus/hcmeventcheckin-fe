@@ -40,7 +40,7 @@ export class SignUpComponent {
   ) {
     const loggedInUser = this.userService.getLoggedInUser();
     if (loggedInUser) {
-      this.router.navigate(['/'])
+      this.router.navigate(['/']);
     }
   }
 

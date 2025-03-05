@@ -4,6 +4,8 @@ import { BehaviorSubject } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class AppService {
+export class SpinnerService {
+  public isLoading$ = new BehaviorSubject<boolean>(false);
+
   constructor() {}
 }

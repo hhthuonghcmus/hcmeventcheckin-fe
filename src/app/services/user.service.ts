@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { User } from '../interfaces/user.interface';
 import { CookieService } from 'ngx-cookie-service';
 import { API_BASE_URL } from '../constants/api.constant';
@@ -13,7 +13,7 @@ import { jwtDecode } from 'jwt-decode';
 })
 export class UserService {
   public qrImageLink$ = new BehaviorSubject<string>('');
-  public loggedInUserRole$ = new BehaviorSubject<string>('');
+  public loggedInUser$ = new BehaviorSubject<User>(null);
 
   constructor(
     private httpClient: HttpClient,
@@ -47,26 +47,28 @@ export class UserService {
     return this.httpClient.get<ApiReponse>(API_BASE_URL + 'user/sign-out');
   }
 
-  getLoggedInUser() {
+  getLoggedInUser(): User {
+    let user: User = null;
     const userCookie = this.cookieService.get(LOGGEDIN_USER_KEY);
     if (userCookie) {
-      const user = JSON.parse(userCookie) as User;
-      return user;
+      user = JSON.parse(userCookie) as User;
     }
 
-    return null;
+    return user;
   }
 
   getLoggedInUserRole(): string {
-    const user = this.getLoggedInUser();
-    if (user) {
-      const decodedObject = jwtDecode(user.accessToken);
-      const role = decodedObject['role'];
-      if (role) {
-        return role;
+    let role = '';
+    let user: User = null;
+    const userCookie = this.cookieService.get(LOGGEDIN_USER_KEY);
+    if (userCookie) {
+      user = JSON.parse(userCookie) as User;
+      if (user) {
+        const decodedObject = jwtDecode(user.accessToken);
+        role = decodedObject['role'];
       }
     }
 
-    return '';
+    return role;
   }
 }

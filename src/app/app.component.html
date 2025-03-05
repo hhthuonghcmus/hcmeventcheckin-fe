@@ -1,24 +1,13 @@
-<p-dialog
-  [showHeader]="false"
-  [modal]="true"
-  [styleClass]="'h-auto w-auto bg-transparent border-0 shadow-none'"
-  [style]="{ 'max-width': '500px' }"
-      [(visible)]="isLoading"
->
-  <p-progress-spinner
-    strokeWidth="8"
-    fill="transparent"
-    animationDuration=".5s"
-    [style]="{ width: '50px', height: '50px' }"
-  />
-</p-dialog>
+@defer () {
+<app-spinner></app-spinner>
 
 <p-toast [breakpoints]="{ '768px': { width: '15rem' } }" />
 
 <app-header></app-header>
 
-<div class="container-fluid app-container d-grid">
-  <router-outlet/>
+<div class="container-fluid app-container">
+  <router-outlet />
 </div>
 
 <app-footer></app-footer>
+}

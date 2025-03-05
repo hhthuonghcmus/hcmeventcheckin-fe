@@ -16,6 +16,8 @@ import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { LOGGEDIN_USER_KEY } from '../../constants/cookie.constant';
 import { CookieService } from 'ngx-cookie-service';
+import { finalize } from 'rxjs';
+import { User } from '../../interfaces/user.interface';
 
 @Component({
   selector: 'app-log-in',
@@ -25,8 +27,8 @@ import { CookieService } from 'ngx-cookie-service';
     InputText,
     InputGroup,
     InputGroupAddon,
-    ReactiveFormsModule,
     FloatLabel,
+    ReactiveFormsModule,
   ],
   templateUrl: './log-in.component.html',
   styleUrl: './log-in.component.scss',
@@ -69,8 +71,9 @@ export class LogInComponent {
               JSON.stringify(response.data),
               expiresDate
             );
-            
-            window.location.href = '/'; 
+
+            this.userService.loggedInUser$.next(response.data as User);
+            this.router.navigate(['/']);
           } else {
             this.messageService.add({
               severity: 'error',

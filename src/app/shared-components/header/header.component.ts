@@ -1,10 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
-  OnInit,
-  signal,
 } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { Menubar } from 'primeng/menubar';
@@ -13,7 +9,7 @@ import { Avatar } from 'primeng/avatar';
 import { Menu } from 'primeng/menu';
 import { Dialog } from 'primeng/dialog';
 import { Router, RouterLink } from '@angular/router';
-import { finalize, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { UserService } from '../../services/user.service';
 import { User } from '../../interfaces/user.interface';
 import { ApiReponse } from '../../interfaces/api-response.interface';
@@ -26,23 +22,14 @@ import { ApiReponse } from '../../interfaces/api-response.interface';
 })
 export class HeaderComponent {
   appMenuItems: MenuItem[] = [];
-  loggedInUser: User;
+  loggedInUser$: Observable<User>;
   isLoggedIn: boolean;
   isQRCodeDialogVisible = false;
   userMenuItems: MenuItem[] = [];
   qrCodePngImageLink$: Observable<ApiReponse> = null;
-  loggInUserRole: string;
 
-  constructor(private userService: UserService) {}
-
-  ngOnInit() {
-    this.appMenuItems = [
-      {
-        label: 'Home',
-        icon: 'pi pi-home',
-        routerLink: '',
-      },
-    ];
+  constructor(private userService: UserService, private router: Router) {
+    this.loggedInUser$ = this.userService.loggedInUser$.asObservable();
 
     this.userMenuItems = [
       {
@@ -61,22 +48,31 @@ export class HeaderComponent {
         command: () => this.signOut(),
       },
     ];
+  }
 
-    this.loggedInUser = this.userService.getLoggedInUser();
-    if (this.loggedInUser === null) {
-      this.isLoggedIn = false;
-    } else {
-      this.isLoggedIn = true;
-      
+  ngOnInit() {
+    this.userService.loggedInUser$.next(this.userService.getLoggedInUser());
+    this.loggedInUser$.subscribe((loggedInUser: User) => {
+      this.appMenuItems = [
+        {
+          label: 'Home',
+          icon: 'pi pi-home',
+          routerLink: '/',
+        },
+      ];
+
       const role = this.userService.getLoggedInUserRole();
       if (role === 'Admin') {
-        this.appMenuItems = [...this.appMenuItems, {
-          label: 'My Topics',
-          icon: 'pi pi-list',
-          routerLink: 'my-topics',
-        }];
+        this.appMenuItems = [
+          ...this.appMenuItems,
+          {
+            label: 'My Topics',
+            icon: 'pi pi-list',
+            routerLink: 'topic/my-topics',
+          },
+        ];
       }
-    }
+    });
   }
 
   getQrCodePngImageLink() {
@@ -85,13 +81,14 @@ export class HeaderComponent {
   }
 
   signOut() {
-    this.userService.loggedInUserRole$.next('');
     this.userService.signOut().subscribe({
       next: (response) => {
-        window.location.href = '/';
+        this.userService.loggedInUser$.next(null);
+        this.router.navigate(['/']);
       },
       error: (error) => {
-        window.location.href = '/';
+        this.userService.loggedInUser$.next(null);
+        this.router.navigate(['/']);
       },
     });
   }

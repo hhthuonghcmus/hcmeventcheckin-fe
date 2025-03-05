@@ -12,10 +12,9 @@ import { Toast } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { CookieService } from 'ngx-cookie-service';
 import { PrimeNG } from 'primeng/config';
-import { ProgressSpinner } from 'primeng/progressspinner';
-import { Dialog } from 'primeng/dialog';
-import { Observable } from 'rxjs';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { CommonModule } from '@angular/common';
+import { SpinnerComponent } from './shared-components/spinner/spinner.component';
+import { SpinnerService } from './services/spinner.service';
 
 @Component({
   selector: 'app-root',
@@ -25,31 +24,18 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
     Toast,
     HeaderComponent,
     FooterComponent,
-    ProgressSpinner,
-    Dialog,
+    SpinnerComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   providers: [MessageService, CookieService],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
   title = 'Event Check In';
-  isLoading = false;
 
-  constructor(
-    private primeng: PrimeNG,
-    private appService: AppService,
-    @Inject(PLATFORM_ID) private platformId: Object
-  ) {}
+  constructor(private primeng: PrimeNG) {}
 
   ngOnInit() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.primeng.ripple.set(true);
-      this.appService.isLoading$.asObservable().subscribe((value) => {
-        this.isLoading = value;
-        console.log(this.isLoading);
-      });
-    }
+    this.primeng.ripple.set(true);
   }
 }

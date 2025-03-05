@@ -2,26 +2,23 @@
   <ng-template #appMenuItem let-appMenuItem>
     <p-button
       class="flex items-center p-menu-item-link"
-      [routerLink]="['/{{appMenuItem.routerLink}}']"
+      [routerLink]="['{{appMenuItem.routerLink}}']"
     >
       <span [class]="appMenuItem.icon"></span>
       <span class="ms-2">{{ appMenuItem.label }}</span>
-  </p-button>
+    </p-button>
   </ng-template>
 
-  <div *ngIf="!isLoggedIn">
+  <div *ngIf="!(loggedInUser$ | async)">
     <p-button
       class="me-2"
       label="Sign Up"
       [routerLink]="['/sign-up']"
     ></p-button>
-    <p-button
-      label="Log In"
-      [routerLink]="['/log-in']"
-    ></p-button>
+    <p-button label="Log In" [routerLink]="['/log-in']"></p-button>
   </div>
 
-  <div *ngIf="isLoggedIn">
+  <div *ngIf="(loggedInUser$ | async) as loggedInUser">
     <p-avatar
       (click)="menu.toggle($event)"
       [label]="loggedInUser.firstName[0]"
