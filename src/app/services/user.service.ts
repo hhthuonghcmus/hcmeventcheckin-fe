@@ -42,9 +42,12 @@ export class UserService {
   }
 
   signOut() {
-    this.cookieService.delete(LOGGEDIN_USER_KEY);
-
     return this.httpClient.get<ApiReponse>(API_BASE_URL + 'user/sign-out');
+  }
+ 
+  clearLoggedInUser() {
+    this.cookieService.delete(LOGGEDIN_USER_KEY);
+    this.loggedInUser$.next(null);
   }
 
   getLoggedInUser(): User {

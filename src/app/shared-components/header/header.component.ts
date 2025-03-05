@@ -1,7 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-} from '@angular/core';
+import { Component } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { Menubar } from 'primeng/menubar';
 import { Button } from 'primeng/button';
@@ -83,11 +81,11 @@ export class HeaderComponent {
   signOut() {
     this.userService.signOut().subscribe({
       next: (response) => {
-        this.userService.loggedInUser$.next(null);
+        this.userService.clearLoggedInUser();
         this.router.navigate(['/']);
       },
       error: (error) => {
-        this.userService.loggedInUser$.next(null);
+        this.userService.clearLoggedInUser();
         this.router.navigate(['/']);
       },
     });

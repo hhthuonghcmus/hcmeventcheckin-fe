@@ -1,1 +1,1 @@
-export const API_BASE_URL = "http://api.hcmeventcheckin.io.vn:8080/";
+export const API_BASE_URL = "https://hcmeventcheckin.io.vn:8080/";
