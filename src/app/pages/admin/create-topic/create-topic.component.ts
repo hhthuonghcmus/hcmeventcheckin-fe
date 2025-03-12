@@ -15,10 +15,8 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Button, ButtonModule } from 'primeng/button';
+import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
-import { Topic } from '../../../interfaces/topic.interface';
-import { text } from 'stream/consumers';
 
 @Component({
   selector: 'app-create-topic',
@@ -39,13 +37,6 @@ import { text } from 'stream/consumers';
 export class CreateTopicComponent {
   topicForm: FormGroup;
   questionTypes$: Observable<QuestionType[]>;
-  categories: any[] = [
-    { name: 'Accounting', key: 'A' },
-    { name: 'Marketing', key: 'M' },
-    { name: 'Production', key: 'P' },
-    { name: 'Research', key: 'R' },
-  ];
-  selectedCategory: any = null;
 
   constructor(
     private questionService: QuestionService,
@@ -61,21 +52,48 @@ export class CreateTopicComponent {
     });
   }
 
-  addQuestion() {
-    const questions = this.topicForm.get('questions') as FormArray;
-    questions.push(this.formBuilder.group({
-      text: ['', Validators.required],
-      answers: this.formBuilder.array([])
-    }));
-    console.log(this.topicForm.value)
-    console.log(questions)
+  addQuestion(): void {
+    this.questions.push(
+      this.formBuilder.group({
+        text: ['', Validators.required],
+        questionType: ['', Validators.required],
+        answers: this.formBuilder.array([]),
+      })
+    );
+  }
+
+  get questions(): FormArray {
+    return this.topicForm.get('questions') as FormArray;
+  }
+
+  getAnswers(questionArrayIndex: number): FormArray {
+    const question = this.questions.at(questionArrayIndex);
+    return question.get('answers') as FormArray;
+  }
+
+  removeQuestion(questionArrayIndex: number): void {
+    this.questions.removeAt(questionArrayIndex);
+  }
+
+  addAnswer(questionArrayIndex: number): void {
+    const question = this.questions.at(questionArrayIndex);
+    const answers =  question.get('answers') as FormArray;
+    answers.push(
+      this.formBuilder.group({
+        text: ['', Validators.required],
+      })
+    );
+  }
+
+  removeAnswer(questionArrayIndex: number, answerArrayIndex: number): void {
+    const question = this.questions.at(questionArrayIndex);
+    const answers =  question.get('answers') as FormArray;
+    answers.removeAt(answerArrayIndex);
   }
 
   createTopic() {}
 
   back() {}
 
-  onSubmit() {
-
-  }
+  onSubmit() {}
 }

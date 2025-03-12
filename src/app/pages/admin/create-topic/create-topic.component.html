@@ -1,63 +1,115 @@
-<form class="container pt-3 d-grid gap-2" [formGroup]="topicForm" (ngSubmit)="onSubmit()">
+<form
+  class="container pt-3 d-grid gap-3"
+  [formGroup]="topicForm"
+  (ngSubmit)="onSubmit()"
+>
   <div class="card p-3">
     <p-floatlabel variant="in">
-      <input pInputText class="w-100" pSize="large" formControlName="name"/>
-      <label>Topic name</label>
+      <input pInputText formControlName="name" pSize="large" class="w-100" />
+      <label for="name">Topic name</label>
     </p-floatlabel>
+    <small
+      class="text-danger"
+      *ngIf="topicForm.get('name')?.hasError('required')"
+      >Topic is required.</small
+    >
   </div>
 
-  <div formArrayName="questions" >
-    <div class="card p-3" *ngFor="let question of topicForm.get['questions'].controls">
-      <div class="row d-flex align-items-center justify-content-between gap-3">
-        <div class="col-12">
-          <div class="d-flex align-items-center justify-content-between">
-            <span class="fw-bold">Question #1</span>
-  
-            <p-button icon="pi pi-times" [rounded]="true" severity="danger"/>
-          </div>
+  <div formArrayName="questions" class="d-flex flex-column gap-2">
+    <div
+      class="card p-3"
+      *ngFor="let question of questions.controls; let i = index"
+      [formGroupName]="i"
+    >
+      <div class="row d-flex align-items-center justify-content-between gap-2">
+        <div class="d-flex align-items-center justify-content-between">
+          <span class="fw-bold">Question {{ i + 1 }}</span>
+          <p-button
+            icon="pi pi-times"
+            [rounded]="true"
+            severity="danger"
+            (click)="removeQuestion(i)"
+          />
         </div>
-  
-        <div class="col-12 col-sm-7 col-lg-8">
+
+        <div class="col-12 col-md-7 col-lg-8">
           <p-floatlabel variant="in">
-            <input pInputText class="w-100" id="phoneNumber" pSize="small" />
-            <label for="phoneNumber">Question </label>
+            <input
+              pInputText
+              class="w-100"
+              id="questionText"
+              pSize="small"
+              formControlName="text"
+            />
+            <label for="questionText">Question </label>
           </p-floatlabel>
+          <small
+            class="text-danger"
+            *ngIf="question.get('text')?.hasError('required')"
+            >Question is required.</small
+          >
         </div>
-  
-        <div class="col-12 col-sm-4 col-lg-3">
+
+        <div class="col-12 col-md-4 col-lg-3">
           <p-select
             styleClass="w-100 h-100"
             [options]="questionTypes$ | async"
             optionLabel="name"
             placeholder="Question type"
+            formControlName="questionType"
           />
+          <small
+            class="text-danger"
+            *ngIf="question.get('questionType')?.hasError('required')"
+            >Qestion type is required.</small
+          >
         </div>
-  
+
         <div class="col-12">
           <div class="d-flex align-items-center justify-content-between">
             <span class="fw-bold">Answers</span>
           </div>
         </div>
-  
+
         <div class="col-12">
-          <div class="d-flex flex-column gap-3">
-            <ng-container *ngFor="let category of categories">
+          <div class="d-flex flex-column gap-1" formArrayName="answers">
+            <ng-container
+              *ngFor="let answer of getAnswers(i).controls; let j = index"
+              [formGroupName]="j"
+            >
               <div class="d-flex align-items-center gap-2">
-                <!-- <p-radiobutton
-                  [inputId]="category.key"
-                  name="category"
-                  [value]="category"
-                  [(ngModel)]="selectedCategory"
+                <span>{{ j + 1 }}</span>
+
+                <input
+                  pInputText
+                  formControlName="text"
+                  pSize="small"
+                  class="w-fill"
                 />
-  
-                <input pInputText [value]="category.name" class="w-fill" /> -->
-  
-                <p-button icon="pi pi-times" [rounded]="true" severity="danger"/>
+
+                <p-button
+                  icon="pi pi-times"
+                  [rounded]="true"
+                  severity="danger"
+                  (onClick)="removeAnswer(i, j)"
+                />
               </div>
+
+              <small
+                class="text-danger ms-3"
+                *ngIf="answer.get('text')?.hasError('required')"
+                >Answer is required.</small
+              >
             </ng-container>
           </div>
-  
-          <button pButton pRipple severity="success" class="mt-3">
+
+          <button
+            pButton
+            pRipple
+            severity="success"
+            class="mt-3"
+            (click)="addAnswer(i)"
+          >
             <div class="d-flex align-items-center gap-2">
               <i class="pi pi-plus-circle"></i>
               <span>Add answer</span>
@@ -68,14 +120,28 @@
     </div>
   </div>
 
-
   <div class="d-flex align-items-center justify-content-between">
     <div class="d-flex align-items-center">
-      <p-button icon="pi pi-plus" severity="success" label="Add question" (click)="addQuestion()"/>
+      <p-button
+        icon="pi pi-plus"
+        severity="success"
+        label="Add question"
+        (click)="addQuestion()"
+      />
     </div>
     <div class="d-flex align-items-center gap-2">
-      <p-button icon="pi pi-file-plus" severity="success" label="Create topic" (click)="createTopic()"/>
-      <p-button icon="pi pi-sign-out" severity="danger" label="Back" (click)="back()"/>
+      <p-button
+        icon="pi pi-file-plus"
+        severity="success"
+        label="Create topic"
+        (click)="createTopic()"
+      />
+      <p-button
+        icon="pi pi-sign-out"
+        severity="danger"
+        label="Back"
+        (click)="back()"
+      />
     </div>
   </div>
 </form>
