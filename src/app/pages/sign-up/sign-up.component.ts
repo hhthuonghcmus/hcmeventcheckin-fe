@@ -85,7 +85,7 @@ export class SignUpComponent {
               severity: 'error',
               summary: 'Sign Up',
               detail: response['message'],
-              life: 50000,
+              life: 3000,
             });
           }
         },

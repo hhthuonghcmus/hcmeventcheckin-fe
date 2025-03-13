@@ -43,18 +43,23 @@
             />
             <label for="questionText">Question </label>
           </p-floatlabel>
-          <small
-            class="text-danger"
-            *ngIf="question.get('text')?.hasError('required')"
-            >Question is required.</small
-          >
+          <div class="text-danger">
+            <small *ngIf="question.get('text')?.hasError('required')"
+              >Question is required.</small
+            >
+          </div>
+
+          <div class="text-danger">
+            <small *ngIf="question.get('answers').hasError('atLeastOneAnswer')">
+              Question has no answer.
+            </small>
+          </div>
         </div>
 
         <div class="col-12 col-md-4 col-lg-3">
           <p-select
             styleClass="w-100 h-100"
             [options]="questionTypes$ | async"
-            optionLabel="name"
             placeholder="Question type"
             formControlName="questionType"
           />
@@ -135,6 +140,7 @@
         severity="success"
         label="Create topic"
         (click)="createTopic()"
+        [disabled]="topicForm.invalid"
       />
       <p-button
         icon="pi pi-sign-out"

@@ -2,21 +2,27 @@ import { Component } from '@angular/core';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InputText } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
-import { QuestionType } from '../../../interfaces/question-type.interface';
 import { QuestionService } from '../../../services/question.service';
 import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { RadioButton } from 'primeng/radiobutton';
 import {
+  AbstractControl,
   FormArray,
   FormBuilder,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
+import { TopicService } from '../../../services/topic.service';
+import { MessageService } from 'primeng/api';
+import { ApiReponse } from '../../../interfaces/api-response.interface';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-topic',
@@ -36,11 +42,14 @@ import { RippleModule } from 'primeng/ripple';
 })
 export class CreateTopicComponent {
   topicForm: FormGroup;
-  questionTypes$: Observable<QuestionType[]>;
+  questionTypes$: Observable<string[]>;
 
   constructor(
     private questionService: QuestionService,
-    private formBuilder: FormBuilder
+    private topicService: TopicService,
+    private formBuilder: FormBuilder,
+    private messageService: MessageService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -57,7 +66,7 @@ export class CreateTopicComponent {
       this.formBuilder.group({
         text: ['', Validators.required],
         questionType: ['', Validators.required],
-        answers: this.formBuilder.array([]),
+        answers: this.formBuilder.array([], this.atLeastOneAnswerValidator()),
       })
     );
   }
@@ -77,7 +86,7 @@ export class CreateTopicComponent {
 
   addAnswer(questionArrayIndex: number): void {
     const question = this.questions.at(questionArrayIndex);
-    const answers =  question.get('answers') as FormArray;
+    const answers = question.get('answers') as FormArray;
     answers.push(
       this.formBuilder.group({
         text: ['', Validators.required],
@@ -87,13 +96,60 @@ export class CreateTopicComponent {
 
   removeAnswer(questionArrayIndex: number, answerArrayIndex: number): void {
     const question = this.questions.at(questionArrayIndex);
-    const answers =  question.get('answers') as FormArray;
+    const answers = question.get('answers') as FormArray;
     answers.removeAt(answerArrayIndex);
   }
 
-  createTopic() {}
+  createTopic() {
+    console.log(this.topicForm.invalid);
+    if (this.topicForm.invalid) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Create topic',
+        detail: 'error',
+      });
+    } else {
+      this.topicService.create(this.topicForm.value).subscribe({
+        next: (response: ApiReponse) => {
+          if (response['statusCode'] === 200) {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Create topic',
+              detail: 'Successfully',
+            });
+
+            this.router.navigate(['topic/my-topics']);
+          } else {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Sign Up',
+              detail: response['message'],
+              life: 3000,
+            });
+          }
+        },
+        error: (error) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Create topic',
+            detail: error,
+          });
+        },
+      });
+    }
+  }
 
   back() {}
 
   onSubmit() {}
+
+  atLeastOneAnswerValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const answersArray = control as FormArray;
+      if (answersArray && answersArray.length > 0) {
+        return null;
+      }
+      return { atLeastOneAnswer: true };
+    };
+  }
 }
