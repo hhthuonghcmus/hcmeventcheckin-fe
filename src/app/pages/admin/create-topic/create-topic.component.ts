@@ -22,7 +22,7 @@ import { RippleModule } from 'primeng/ripple';
 import { TopicService } from '../../../services/topic.service';
 import { MessageService } from 'primeng/api';
 import { ApiReponse } from '../../../interfaces/api-response.interface';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-create-topic',
@@ -36,6 +36,7 @@ import { Router } from '@angular/router';
     FormsModule,
     ButtonModule,
     RippleModule,
+    RouterLink
   ],
   templateUrl: './create-topic.component.html',
   styleUrl: './create-topic.component.scss',
@@ -53,8 +54,7 @@ export class CreateTopicComponent {
   ) {}
 
   ngOnInit() {
-    this.questionTypes$ = this.questionService.questionTypes$.asObservable();
-    this.questionService.fetchQuestionTypes();
+    this.questionTypes$ = this.questionService.fetchQuestionTypes();
     this.topicForm = this.formBuilder.group({
       name: ['', [Validators.required]],
       questions: this.formBuilder.array([]),
@@ -122,7 +122,7 @@ export class CreateTopicComponent {
           } else {
             this.messageService.add({
               severity: 'error',
-              summary: 'Sign Up',
+              summary: 'Create topic',
               detail: response['message'],
               life: 3000,
             });
@@ -138,10 +138,6 @@ export class CreateTopicComponent {
       });
     }
   }
-
-  back() {}
-
-  onSubmit() {}
 
   atLeastOneAnswerValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {

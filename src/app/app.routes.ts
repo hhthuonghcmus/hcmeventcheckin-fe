@@ -4,6 +4,7 @@ import { LogInComponent } from './pages/log-in/log-in.component';
 import { SignUpComponent } from './pages/sign-up/sign-up.component';
 import { MyTopicsComponent } from './pages/admin/my-topics/my-topics.component';
 import { CreateTopicComponent } from './pages/admin/create-topic/create-topic.component';
+import { EditTopicComponent } from './pages/admin/edit-topic/edit-topic.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -14,6 +15,7 @@ export const routes: Routes = [
     children: [
       { path: 'my-topics', component: MyTopicsComponent },
       { path: 'create', component: CreateTopicComponent },
+      { path: 'edit/:id', component: EditTopicComponent },
     ],
   },
 ];

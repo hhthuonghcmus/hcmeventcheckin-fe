@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { asyncScheduler, BehaviorSubject, map, Observable, scheduled } from 'rxjs';
 import { QuestionType } from '../interfaces/question-type.interface';
 import { HttpClient } from '@angular/common/http';
 import { API_BASE_URL } from '../constants/api.constant';
@@ -9,20 +9,25 @@ import { ApiReponse } from '../interfaces/api-response.interface';
   providedIn: 'root',
 })
 export class QuestionService {
-  public questionTypes$ = new BehaviorSubject<string[]>([]);
+  public questionTypes: string[] = [];
 
   constructor(private httpClient: HttpClient) {
 
   }
 
-  fetchQuestionTypes(): void {
-    this.getQuestionTypes().subscribe((response: ApiReponse) => {
-      const questionTypes = response.data as QuestionType[];
-      const questionTypeNames = questionTypes.map(questionType => {
-        return questionType.name;
+  fetchQuestionTypes(): Observable<string[]> {
+    if (this.questionTypes.length > 0) {
+      return scheduled([this.questionTypes], asyncScheduler);
+    }
+    
+    return this.getQuestionTypes().pipe(
+      map((response: ApiReponse) => {
+        const questionTypes = response.data as QuestionType[];
+        this.questionTypes = questionTypes.map(questionType => questionType.name);
+
+        return this.questionTypes;
       })
-      this.questionTypes$.next(questionTypeNames);
-    });
+    );
   }
 
   getQuestionTypes(): Observable<ApiReponse> {
@@ -31,3 +36,7 @@ export class QuestionService {
     );
   }
 }
+function of(questionTypes: string[]): Observable<string[]> {
+  throw new Error('Function not implemented.');
+}
+

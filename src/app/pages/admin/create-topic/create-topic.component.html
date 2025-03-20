@@ -1,7 +1,6 @@
 <form
   class="container pt-3 d-grid gap-3"
   [formGroup]="topicForm"
-  (ngSubmit)="onSubmit()"
 >
   <div class="card p-3">
     <p-floatlabel variant="in">
@@ -146,7 +145,7 @@
         icon="pi pi-sign-out"
         severity="danger"
         label="Back"
-        (click)="back()"
+        [routerLink]="['/topic/my-topics']"
       />
     </div>
   </div>

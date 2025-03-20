@@ -1,13 +1,17 @@
 <div class="container pt-3">
-<div class="card border-rounded">
+  <div class="card border-rounded">
     <p-table [value]="myTopics" stripedRow [styleClass]="'px-4'">
       <ng-template #caption>
         <div class="d-flex align-items-center justify-content-between">
           <span class="fw-bold">My Topics</span>
-          <p-button icon="pi pi-plus-circle" label="New" [routerLink]="['/topic/create']"/>
+          <p-button
+            icon="pi pi-plus-circle"
+            label="New"
+            [routerLink]="['/topic/create']"
+          />
         </div>
       </ng-template>
-  
+
       <ng-template #header>
         <tr>
           <th class="text-start">#</th>
@@ -16,7 +20,7 @@
           <th></th>
         </tr>
       </ng-template>
-      
+
       <ng-template #body let-topic>
         <tr>
           <td class="text-start">
@@ -29,11 +33,10 @@
             {{ topic.questions.length }}
           </td>
           <td class="text-end">
-            <p-button icon="pi pi-pencil" label="Edit" />
+            <p-button icon="pi pi-pencil" label="Edit" [routerLink]="['/topic/edit', topic.id]"/>
           </td>
         </tr>
       </ng-template>
     </p-table>
-
-</div>
+  </div>
 </div>
