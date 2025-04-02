@@ -31,7 +31,6 @@ import { Router, RouterLink } from '@angular/router';
     InputText,
     FloatLabel,
     Select,
-    RadioButton,
     ReactiveFormsModule,
     FormsModule,
     ButtonModule,

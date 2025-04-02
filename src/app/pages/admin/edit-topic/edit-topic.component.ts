@@ -34,7 +34,6 @@ import { Topic } from '../../../interfaces/topic.interface';
     InputText,
     FloatLabel,
     Select,
-    RadioButton,
     ReactiveFormsModule,
     FormsModule,
     ButtonModule,
@@ -47,6 +46,7 @@ import { Topic } from '../../../interfaces/topic.interface';
 export class EditTopicComponent {
   topicForm: FormGroup;
   questionTypes$: Observable<string[]>;
+  topicId: string = '';
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -64,8 +64,8 @@ export class EditTopicComponent {
       questions: this.formBuilder.array([]),
     });
 
-    const topicId = this.activatedRoute.snapshot.paramMap.get('id')!;
-    this.topicService.getById(topicId).subscribe({
+    this.topicId = this.activatedRoute.snapshot.paramMap.get('id')!;
+    this.topicService.getById(this.topicId).subscribe({
       next: (response: ApiReponse) => {
         const topic = response.data as Topic;
         this.topicForm.patchValue({
@@ -125,7 +125,7 @@ export class EditTopicComponent {
 
   addAnswer(
     questionArrayIndex: number,
-    answer: Answer = {
+    answer = {
       text: '',
     }
   ): void {
@@ -144,7 +144,7 @@ export class EditTopicComponent {
     answers.removeAt(answerArrayIndex);
   }
 
-  saveChanges() {
+  update() {
     if (this.topicForm.invalid) {
       this.messageService.add({
         severity: 'error',
@@ -152,7 +152,7 @@ export class EditTopicComponent {
         detail: 'error',
       });
     } else {
-      this.topicService.create(this.topicForm.value).subscribe({
+      this.topicService.update(this.topicId, this.topicForm.value).subscribe({
         next: (response: ApiReponse) => {
           if (response['statusCode'] === 200) {
             this.messageService.add({
@@ -167,7 +167,6 @@ export class EditTopicComponent {
               severity: 'error',
               summary: 'Edit topic',
               detail: response['message'],
-              life: 3000,
             });
           }
         },

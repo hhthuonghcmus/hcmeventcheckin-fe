@@ -1,5 +1,5 @@
 import { ApiReponse } from './../../../interfaces/api-response.interface';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { TableModule } from 'primeng/table';
 import { TopicService } from '../../../services/topic.service';
 import { Topic } from '../../../interfaces/topic.interface';
@@ -7,6 +7,7 @@ import { Column } from '../../../interfaces/table-column.interface';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Button } from 'primeng/button';
 import { RouterLink } from '@angular/router';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-my-topics',
@@ -18,7 +19,10 @@ export class MyTopicsComponent {
   myTopics: Topic[];
   tableColumns: Column[];
 
-  constructor(private topicService: TopicService) {}
+  constructor(
+    private topicService: TopicService,
+    private messageService: MessageService
+  ) {}
 
   ngOnInit() {
     this.tableColumns = [
@@ -27,7 +31,7 @@ export class MyTopicsComponent {
       { field: 'questions.length', header: 'Questions' },
     ];
 
-    if(isPlatformBrowser) {
+    if (isPlatformBrowser) {
       this.tableColumns = [
         { field: 'code', header: '#' },
         { field: 'name', header: 'Name' },
@@ -37,9 +41,36 @@ export class MyTopicsComponent {
       this.topicService.getMyTopics().subscribe((response: ApiReponse) => {
         this.myTopics = response.data as Topic[];
       });
-  
     }
   }
 
+  openVote(topicIndex: number) {
+    var topic = this.myTopics.at(topicIndex);
+    this.topicService.openVote(topic.id).subscribe((response: ApiReponse) => {
+      if (response.statusCode === 200) {
+        topic.isOpenedForVoting = true;
+      } else {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Open vote',
+          detail: response.message,
+        });
+      }
+    });
+  }
 
+  closeVote(topicIndex: number) {
+    var topic = this.myTopics.at(topicIndex);
+    this.topicService.closeVote(topic.id).subscribe((response: ApiReponse) => {
+      if (response.statusCode === 200) {
+        topic.isOpenedForVoting = false;
+      } else {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Open vote',
+          detail: response.message,
+        });
+      }
+    });
+  }
 }

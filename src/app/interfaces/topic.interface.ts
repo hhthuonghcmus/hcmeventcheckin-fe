@@ -5,4 +5,5 @@ export interface Topic {
     id: string
     name: string
     questions: Question[]
+    isOpenedForVoting: boolean
 }

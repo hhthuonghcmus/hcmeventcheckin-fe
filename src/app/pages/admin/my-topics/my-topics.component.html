@@ -1,6 +1,6 @@
 <div class="container pt-3">
   <div class="card border-rounded">
-    <p-table [value]="myTopics" stripedRow [styleClass]="'px-4'">
+    <p-table [value]="myTopics" stripedRow [styleClass]="'px-3'">
       <ng-template #caption>
         <div class="d-flex align-items-center justify-content-between">
           <span class="fw-bold">My Topics</span>
@@ -32,8 +32,24 @@
           <td class="text-center">
             {{ topic.questions.length }}
           </td>
-          <td class="text-end">
-            <p-button icon="pi pi-pencil" label="Edit" [routerLink]="['/topic/edit', topic.id]"/>
+          <td class="d-flex gap-2 justify-content-end">
+            <p-button
+              icon="pi pi-pencil"
+              label="Edit"
+              [routerLink]="['/topic/edit', topic.id]"
+            />
+            <p-button
+              *ngIf="!topic.isOpenedForVoting"
+              label="Open Vote"
+              severity="success"
+              (click)="openVote(myTopics.indexOf(topic))"
+            />
+            <p-button
+              *ngIf="topic.isOpenedForVoting"
+              label="Close Vote"
+              severity="danger"
+              (click)="closeVote(myTopics.indexOf(topic))"
+            />
           </td>
         </tr>
       </ng-template>
