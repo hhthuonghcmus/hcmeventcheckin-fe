@@ -1,10 +1,10 @@
-import { Question } from './../../../interfaces/question.interface';
-import { Answer } from './../../../interfaces/answer.interface';
+import { Question } from '../../../../interfaces/question.interface';
+import { Answer } from '../../../../interfaces/answer.interface';
 import { Component } from '@angular/core';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InputText } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
-import { QuestionService } from '../../../services/question.service';
+import { QuestionService } from '../../../../services/question.service';
 import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { RadioButton } from 'primeng/radiobutton';
@@ -21,11 +21,11 @@ import {
 } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
-import { TopicService } from '../../../services/topic.service';
+import { TopicService } from '../../../../services/topic.service';
 import { MessageService } from 'primeng/api';
-import { ApiReponse } from '../../../interfaces/api-response.interface';
+import { ApiReponse } from '../../../../interfaces/api-response.interface';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Topic } from '../../../interfaces/topic.interface';
+import { Topic } from '../../../../interfaces/topic.interface';
 
 @Component({
   selector: 'app-edit-topic',

@@ -1,13 +1,13 @@
-import { ApiReponse } from './../../../interfaces/api-response.interface';
 import { Component } from '@angular/core';
 import { TableModule } from 'primeng/table';
-import { TopicService } from '../../../services/topic.service';
-import { Topic } from '../../../interfaces/topic.interface';
-import { Column } from '../../../interfaces/table-column.interface';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Button } from 'primeng/button';
 import { RouterLink } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { Column } from '../../../../interfaces/table-column.interface';
+import { Topic } from '../../../../interfaces/topic.interface';
+import { TopicService } from '../../../../services/topic.service';
+import { ApiReponse } from '../../../../interfaces/api-response.interface';
 
 @Component({
   selector: 'app-my-topics',

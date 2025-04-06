@@ -64,6 +64,11 @@ export class HeaderComponent {
         this.appMenuItems = [
           ...this.appMenuItems,
           {
+            label: 'My Events',
+            icon: 'pi pi-list',
+            routerLink: 'event/my-events',
+          },
+          {
             label: 'My Topics',
             icon: 'pi pi-list',
             routerLink: 'topic/my-topics',
