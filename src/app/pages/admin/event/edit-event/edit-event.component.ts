@@ -1,6 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { ReactiveFormsModule, FormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormsModule,
+  FormGroup,
+  FormBuilder,
+  Validators,
+  FormArray,
+} from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
@@ -16,10 +23,21 @@ import { ApiReponse } from '../../../../interfaces/api-response.interface';
 import { Event } from '../../../../interfaces/event.interface';
 import { Topic } from '../../../../interfaces/topic.interface';
 import { TopicService } from '../../../../services/topic.service';
+import { RadioButton } from 'primeng/radiobutton';
+import {
+  FileSelectEvent,
+  FileUpload,
+  FileUploadEvent,
+} from 'primeng/fileupload';
+import { UploadEvent } from '../../../../interfaces/upload-event.interface';
+import * as XLSX from 'xlsx';
+import { TableModule } from 'primeng/table';
+import { ToggleButton } from 'primeng/togglebutton';
 
 @Component({
   selector: 'app-edit-event',
-  imports: [CommonModule,
+  imports: [
+    CommonModule,
     InputText,
     FloatLabel,
     Select,
@@ -29,9 +47,14 @@ import { TopicService } from '../../../../services/topic.service';
     RippleModule,
     RouterLink,
     Textarea,
-    DatePicker],
+    DatePicker,
+    RadioButton,
+    FileUpload,
+    TableModule,
+    ToggleButton,
+  ],
   templateUrl: './edit-event.component.html',
-  styleUrl: './edit-event.component.scss'
+  styleUrl: './edit-event.component.scss',
 })
 export class EditEventComponent {
   eventForm: FormGroup;
@@ -45,11 +68,11 @@ export class EditEventComponent {
     private formBuilder: FormBuilder,
     private messageService: MessageService,
     private router: Router
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.eventId = this.activatedRoute.snapshot.paramMap.get('id')!;
-    console.log(this.eventId)
+    console.log(this.eventId);
     this.myTopics$ = this.topicService.getMyTopics().pipe(
       map((response: ApiReponse) => {
         const myTopics = response.data as Topic[];
@@ -59,6 +82,9 @@ export class EditEventComponent {
 
     this.eventForm = this.formBuilder.group({
       name: ['', [Validators.required]],
+      isPrivate: [true, [Validators.required]],
+      participants: [[]],
+      isParticipantTableVisible: [false],
       location: [''],
       description: [''],
       startTime: ['', Validators.required],
@@ -68,12 +94,16 @@ export class EditEventComponent {
       votingEndTime: ['', Validators.required],
       topicId: [null, Validators.required],
     });
+
     this.eventService.getById(this.eventId).subscribe({
       next: (response: ApiReponse) => {
         const event = response.data as Event;
-        console.log(event)
+        console.log(event);
         this.eventForm.patchValue({
           name: event.name,
+          isPrivate: event.isPrivate,
+          participants: event.participants,
+          isParticipantTableVisible: false,
           location: event.location,
           description: event.description,
           startTime: new Date(event.startTime),
@@ -92,6 +122,34 @@ export class EditEventComponent {
         });
       },
     });
+  }
+
+  get participants() {
+    return this.eventForm.get('participants') as FormArray;
+  }
+
+  selectParticipantsXlsxFile(event: FileSelectEvent) {
+    console.log(event.currentFiles);
+    const file = event.currentFiles[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.readAsArrayBuffer(file);
+      reader.onload = (e: any) => {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+        const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+
+        this.participants.controls = [];
+        jsonData.forEach((row: any) => {
+          const propertyNames = Object.keys(row);
+          this.participants.value.push({
+            name: row[propertyNames[0]],
+            phoneNumber: row[propertyNames[1]],
+          });
+        });
+      };
+    }
   }
 
   confirm() {

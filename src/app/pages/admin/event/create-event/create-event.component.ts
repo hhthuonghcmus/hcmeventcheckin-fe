@@ -26,6 +26,16 @@ import { Textarea } from 'primeng/textarea';
 import { DatePicker } from 'primeng/datepicker';
 import { Topic } from '../../../../interfaces/topic.interface';
 import { EventService } from '../../../../services/event.service';
+import { RadioButton } from 'primeng/radiobutton';
+import {
+  FileSelectEvent,
+  FileUpload,
+  FileUploadEvent,
+} from 'primeng/fileupload';
+import { UploadEvent } from '../../../../interfaces/upload-event.interface';
+import * as XLSX from 'xlsx';
+import { TableModule } from 'primeng/table';
+import { ToggleButton } from 'primeng/togglebutton';
 
 @Component({
   selector: 'app-create-event',
@@ -40,7 +50,11 @@ import { EventService } from '../../../../services/event.service';
     RippleModule,
     RouterLink,
     Textarea,
-    DatePicker
+    DatePicker,
+    RadioButton,
+    FileUpload,
+    TableModule,
+    ToggleButton
   ],
   templateUrl: './create-event.component.html',
   styleUrl: './create-event.component.scss',
@@ -55,7 +69,7 @@ export class CreateEventComponent {
     private formBuilder: FormBuilder,
     private messageService: MessageService,
     private router: Router
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.myTopics$ = this.topicService.getMyTopics().pipe(
@@ -64,9 +78,12 @@ export class CreateEventComponent {
         return myTopics;
       })
     );
-    
+
     this.eventForm = this.formBuilder.group({
       name: ['', [Validators.required]],
+      isPrivate: [true, [Validators.required]],
+      participants: [[]],
+      isParticipantTableVisible: [false],
       location: [''],
       description: [''],
       startTime: ['', Validators.required],
@@ -78,8 +95,36 @@ export class CreateEventComponent {
     });
   }
 
+  get participants() {
+    return this.eventForm.get('participants') as FormArray;
+  }
+
+  selectParticipantsXlsxFile(event: FileSelectEvent) {
+    console.log(event.currentFiles);
+    const file = event.currentFiles[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.readAsArrayBuffer(file);
+      reader.onload = (e: any) => {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+        const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+
+        this.participants.controls = [];
+        jsonData.forEach((row: any) => {
+          const propertyNames = Object.keys(row);
+          this.participants.value.push({
+            name: row[propertyNames[0]],
+            phoneNumber: row[propertyNames[1]],
+          });
+        });
+      };
+    }
+  }
 
   createEvent() {
+    console.log(this.eventForm.value);
     if (this.eventForm.invalid) {
       this.messageService.add({
         severity: 'error',

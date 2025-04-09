@@ -14,14 +14,12 @@
     </p-floatlabel>
   </div>
 
-  
   <div class="card p-3 d-flex gap-2">
     <div class="row d-flex align-items-center justify-content-between gap-2">
-        
       <div class="col-12 col-sm-5 col-md-4">
         <p-floatlabel variant="in">
           <p-datepicker
-            formControlName="luckyDrawStartTime"
+            formControlName="startTime"
             showIcon
             iconDisplay="input"
             [showTime]="true"
@@ -31,7 +29,7 @@
             class="d-inline-grid w-100"
           />
           <label for="startTime"
-            >Start 
+            >Start
             <small
               class="text-danger"
               *ngIf="eventForm.get('startTime')?.hasError('required')"
@@ -41,7 +39,7 @@
           >
         </p-floatlabel>
       </div>
-      
+
       <div class="col-12">
         <p-floatlabel variant="in">
           <input
@@ -67,8 +65,60 @@
         </p-floatlabel>
       </div>
 
-    </div>
+      <div class="d-block d-md-flex align-items-center gap-3">
+        <div class="w-auto">
+          <div class="d-flex gap-3">
+            <div class="d-flex align-items-center gap-1">
+              <p-radiobutton [value]="true" formControlName="isPrivate" />
+              <label>Private</label>
+            </div>
+            <div class="d-flex align-items-center gap-1">
+              <p-radiobutton [value]="false" formControlName="isPrivate" />
+              <label>Public</label>
+            </div>
+          </div>
+        </div>
+  
+        <div class="mt-2 mt-md-0 w-100 d-flex justify-content-start" *ngIf="eventForm.get('isPrivate').value">
+          <p-fileupload
+            chooseLabel="Participants.xlsx"
+            maxFileSize="1000000"
+            accept=".xlsx"
+            mode="basic"
+            (onSelect)="selectParticipantsXlsxFile($event)"
+          >
+          </p-fileupload>
+        </div>
+      </div>
 
+      <div
+        class="col-12"
+        *ngIf="eventForm.get('isPrivate').value"
+      >
+        <div>Participants: {{ participants.value.length }} 
+            <p-togglebutton *ngIf="participants.value.length > 0" formControlName="isParticipantTableVisible" onLabel="Hide" offLabel="Show" onIcon="pi pi-eye-slash" offIcon="pi pi-eye"/>
+        </div>
+        <p-table [value]="participants.value" *ngIf="eventForm.get('isParticipantTableVisible').value">
+          <ng-template #header>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Phone number</th>
+            </tr>
+          </ng-template>
+          <ng-template #body let-participant>
+            <tr>
+              <td>{{ participants.value.indexOf(participant) + 1 }}</td>
+              <td>{{ participant.name }}</td>
+              <td>{{ participant.phoneNumber }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card p-3 d-flex gap-2">
     <div class="row d-flex align-items-center gap-1">
       <span class="text-secondary">Lucky draw</span>
 
