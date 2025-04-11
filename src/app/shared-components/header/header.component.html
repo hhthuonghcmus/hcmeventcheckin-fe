@@ -18,7 +18,7 @@
     <p-button label="Log In" [routerLink]="['/log-in']"></p-button>
   </div>
 
-  <div *ngIf="(loggedInUser$ | async) as loggedInUser">
+  <div *ngIf="loggedInUser$ | async as loggedInUser">
     <p-avatar
       (click)="menu.toggle($event)"
       [label]="loggedInUser.firstName[0]"
@@ -46,18 +46,19 @@
 
   <div class="position-relative w-auto">
     <p-dialog
-      [(visible)]="isQRCodeDialogVisible"
+      [(visible)]="isQRCodeScannerDialogVisible"
       [modal]="true"
       [styleClass]="'w-75'"
       [style]="{ 'max-width': '500px' }"
       [dismissableMask]="true"
       [resizable]="false"
     >
-      <img
-        *ngIf="qrCodePngImageLink$ | async as qrCodePngImageLink"
-        [src]="qrCodePngImageLink.data"
-        style="width: -webkit-fill-available"
-      />
+      <ngx-scanner-qrcode #action="scanner"></ngx-scanner-qrcode>
+      <p *ngIf="action.isLoading">⌛ Loading...</p>
+      <p-button
+        [label]="action.isStart ? 'Stop' : 'Start' "
+        (click)="action.isStart ? action.stop() : action.start()"
+      ></p-button>
     </p-dialog>
   </div>
 </p-menubar>

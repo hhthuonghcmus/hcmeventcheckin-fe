@@ -11,10 +11,11 @@ import { Observable } from 'rxjs';
 import { UserService } from '../../services/user.service';
 import { User } from '../../interfaces/user.interface';
 import { ApiReponse } from '../../interfaces/api-response.interface';
+import { NgxScannerQrcodeComponent, LOAD_WASM } from 'ngx-scanner-qrcode';
 
 @Component({
   selector: 'app-header',
-  imports: [CommonModule, Avatar, Menu, Menubar, Button, Dialog, RouterLink],
+  imports: [CommonModule, Avatar, Menu, Menubar, Button, Dialog, RouterLink, NgxScannerQrcodeComponent ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })
@@ -22,7 +23,7 @@ export class HeaderComponent {
   appMenuItems: MenuItem[] = [];
   loggedInUser$: Observable<User>;
   isLoggedIn: boolean;
-  isQRCodeDialogVisible = false;
+  isQRCodeScannerDialogVisible = false;
   userMenuItems: MenuItem[] = [];
   qrCodePngImageLink$: Observable<ApiReponse> = null;
 
@@ -36,7 +37,7 @@ export class HeaderComponent {
         routerLink: 'settings',
       },
       {
-        label: 'Get QR Code',
+        label: 'Scan private QR Code',
         icon: 'pi pi-qrcode',
         command: () => this.getQrCodePngImageLink(),
       },
@@ -79,7 +80,7 @@ export class HeaderComponent {
   }
 
   getQrCodePngImageLink() {
-    this.isQRCodeDialogVisible = true;
+    this.isQRCodeScannerDialogVisible = true;
     this.qrCodePngImageLink$ = this.userService.getQrCodePngImageLink();
   }
 

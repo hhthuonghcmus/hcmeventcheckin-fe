@@ -95,8 +95,8 @@
       </div>
 
       <div class="col-12" *ngIf="eventForm.get('isPrivate')?.value">
-        <div>
-          Participants: {{ participants.value.length }}
+        <div class="d-flex gap-3 align-items-center">
+          <div>Participants: {{ participants.value.length }}</div>
           <p-togglebutton
             *ngIf="participants.value.length > 0"
             formControlName="isParticipantTableVisible"
@@ -115,6 +115,7 @@
               <th>#</th>
               <th>Name</th>
               <th>Phone number</th>
+              <th class="text-center">Showed up</th>
             </tr>
           </ng-template>
           <ng-template #body let-participant>
@@ -122,6 +123,19 @@
               <td>{{ participants.value.indexOf(participant) + 1 }}</td>
               <td>{{ participant.name }}</td>
               <td>{{ participant.phoneNumber }}</td>
+              <td class="text-center">
+                <p-button
+                  *ngIf="participant.participated"
+                  icon="pi pi-check"
+                  [rounded]="true"
+                />
+                <p-button
+                  *ngIf="!participant.participated"
+                  icon="pi pi-times"
+                  [rounded]="true"
+                  severity="danger"
+                />
+              </td>
             </tr>
           </ng-template>
         </p-table>
