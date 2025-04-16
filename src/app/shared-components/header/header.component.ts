@@ -10,12 +10,21 @@ import { Router, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { UserService } from '../../services/user.service';
 import { User } from '../../interfaces/user.interface';
-import { ApiReponse } from '../../interfaces/api-response.interface';
+import { ApiResponse } from '../../interfaces/api-response.interface';
 import { NgxScannerQrcodeComponent, LOAD_WASM } from 'ngx-scanner-qrcode';
 
 @Component({
   selector: 'app-header',
-  imports: [CommonModule, Avatar, Menu, Menubar, Button, Dialog, RouterLink, NgxScannerQrcodeComponent ],
+  imports: [
+    CommonModule,
+    Avatar,
+    Menu,
+    Menubar,
+    Button,
+    Dialog,
+    RouterLink,
+    NgxScannerQrcodeComponent,
+  ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })
@@ -25,7 +34,7 @@ export class HeaderComponent {
   isLoggedIn: boolean;
   isQRCodeScannerDialogVisible = false;
   userMenuItems: MenuItem[] = [];
-  qrCodePngImageLink$: Observable<ApiReponse> = null;
+  qrCodePngImageLink$: Observable<ApiResponse> = null;
 
   constructor(private userService: UserService, private router: Router) {
     this.loggedInUser$ = this.userService.loggedInUser$.asObservable();

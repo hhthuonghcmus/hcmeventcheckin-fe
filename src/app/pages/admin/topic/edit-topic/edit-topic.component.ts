@@ -23,7 +23,7 @@ import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { TopicService } from '../../../../services/topic.service';
 import { MessageService } from 'primeng/api';
-import { ApiReponse } from '../../../../interfaces/api-response.interface';
+import { ApiResponse } from '../../../../interfaces/api-response.interface';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Topic } from '../../../../interfaces/topic.interface';
 
@@ -66,7 +66,7 @@ export class EditTopicComponent {
 
     this.topicId = this.activatedRoute.snapshot.paramMap.get('id')!;
     this.topicService.getById(this.topicId).subscribe({
-      next: (response: ApiReponse) => {
+      next: (response: ApiResponse) => {
         const topic = response.data as Topic;
         this.topicForm.patchValue({
           name: topic.name,
@@ -153,7 +153,7 @@ export class EditTopicComponent {
       });
     } else {
       this.topicService.update(this.topicId, this.topicForm.value).subscribe({
-        next: (response: ApiReponse) => {
+        next: (response: ApiResponse) => {
           if (response['statusCode'] === 200) {
             this.messageService.add({
               severity: 'success',

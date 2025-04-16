@@ -7,7 +7,7 @@ import { MessageService } from 'primeng/api';
 import { Column } from '../../../../interfaces/table-column.interface';
 import { Topic } from '../../../../interfaces/topic.interface';
 import { TopicService } from '../../../../services/topic.service';
-import { ApiReponse } from '../../../../interfaces/api-response.interface';
+import { ApiResponse } from '../../../../interfaces/api-response.interface';
 
 @Component({
   selector: 'app-my-topics',
@@ -38,7 +38,7 @@ export class MyTopicsComponent {
         { field: 'questions.length', header: 'Questions' },
       ];
 
-      this.topicService.getMyTopics().subscribe((response: ApiReponse) => {
+      this.topicService.getMyTopics().subscribe((response: ApiResponse) => {
         this.myTopics = response.data as Topic[];
       });
     }
@@ -46,7 +46,7 @@ export class MyTopicsComponent {
 
   openVote(topicIndex: number) {
     var topic = this.myTopics.at(topicIndex);
-    this.topicService.openVote(topic.id).subscribe((response: ApiReponse) => {
+    this.topicService.openVote(topic.id).subscribe((response: ApiResponse) => {
       if (response.statusCode === 200) {
         topic.isOpenedForVoting = true;
       } else {
@@ -61,7 +61,7 @@ export class MyTopicsComponent {
 
   closeVote(topicIndex: number) {
     var topic = this.myTopics.at(topicIndex);
-    this.topicService.closeVote(topic.id).subscribe((response: ApiReponse) => {
+    this.topicService.closeVote(topic.id).subscribe((response: ApiResponse) => {
       if (response.statusCode === 200) {
         topic.isOpenedForVoting = false;
       } else {

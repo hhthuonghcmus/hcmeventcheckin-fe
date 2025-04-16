@@ -11,6 +11,7 @@ import {
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
+import { Dialog } from 'primeng/dialog';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InputText } from 'primeng/inputtext';
 import { RippleModule } from 'primeng/ripple';
@@ -19,7 +20,7 @@ import { Textarea } from 'primeng/textarea';
 import { map, Observable } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { EventService } from '../../../../services/event.service';
-import { ApiReponse } from '../../../../interfaces/api-response.interface';
+import { ApiResponse } from '../../../../interfaces/api-response.interface';
 import { Event } from '../../../../interfaces/event.interface';
 import { Topic } from '../../../../interfaces/topic.interface';
 import { TopicService } from '../../../../services/topic.service';
@@ -52,6 +53,7 @@ import { ToggleButton } from 'primeng/togglebutton';
     FileUpload,
     TableModule,
     ToggleButton,
+    Dialog,
   ],
   templateUrl: './edit-event.component.html',
   styleUrl: './edit-event.component.scss',
@@ -60,6 +62,8 @@ export class EditEventComponent {
   eventForm: FormGroup;
   myTopics$: Observable<Topic[]>;
   eventId: string;
+  isQrCodeDialogVisible = false;
+  qrCodeImageLink: string | null = null;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -74,7 +78,7 @@ export class EditEventComponent {
     this.eventId = this.activatedRoute.snapshot.paramMap.get('id')!;
     console.log(this.eventId);
     this.myTopics$ = this.topicService.getMyTopics().pipe(
-      map((response: ApiReponse) => {
+      map((response: ApiResponse) => {
         const myTopics = response.data as Topic[];
         return myTopics;
       })
@@ -96,7 +100,7 @@ export class EditEventComponent {
     });
 
     this.eventService.getById(this.eventId).subscribe({
-      next: (response: ApiReponse) => {
+      next: (response: ApiResponse) => {
         const event = response.data as Event;
         console.log(event);
         this.eventForm.patchValue({
@@ -139,10 +143,10 @@ export class EditEventComponent {
         const workbook = XLSX.read(data, { type: 'array' });
         const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
         const jsonData = XLSX.utils.sheet_to_json(firstSheet);
-        console.log(jsonData)
+        console.log(jsonData);
         this.participants.controls = [];
         jsonData.forEach((row: any) => {
-          console.log(row)
+          console.log(row);
           const propertyNames = Object.keys(row);
           this.participants.value.push({
             name: row[propertyNames[0]],
@@ -151,6 +155,43 @@ export class EditEventComponent {
         });
       };
     }
+  }
+
+  showQrCode(phoneNumber: string) {
+    if (!phoneNumber) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'QR Code Error',
+        detail: 'Phone number is required',
+      });
+      return;
+    }
+    const requestData = {
+      eventId: this.eventId,
+      phoneNumber: phoneNumber,
+    };
+
+    this.eventService.getPrivateQrCodePngImageLink(requestData).subscribe({
+      next: (response: ApiResponse) => {
+        if (response.statusCode === 200 && response.data) {
+          this.qrCodeImageLink = String(response.data);
+          this.isQrCodeDialogVisible = true;
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'QR Code Error',
+            detail: response.message || 'Failed to generate QR code',
+          });
+        }
+      },
+      error: (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'QR Code Error',
+          detail: 'Failed to generate QR code. Please try again.',
+        });
+      },
+    });
   }
 
   confirm() {
@@ -162,7 +203,7 @@ export class EditEventComponent {
       });
     } else {
       this.eventService.update(this.eventId, this.eventForm.value).subscribe({
-        next: (response: ApiReponse) => {
+        next: (response: ApiResponse) => {
           if (response['statusCode'] === 200) {
             this.messageService.add({
               severity: 'success',

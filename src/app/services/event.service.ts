@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { API_BASE_URL } from '../constants/api.constant';
-import { ApiReponse } from '../interfaces/api-response.interface';
+import { ApiResponse } from '../interfaces/api-response.interface';
 import { Topic } from '../interfaces/topic.interface';
 import { map } from 'rxjs';
 
@@ -14,27 +14,31 @@ export class EventService {
   constructor(private httpClient: HttpClient) {}
 
   getMyEvents() {
-    return this.httpClient.get<ApiReponse>(
+    return this.httpClient.get<ApiResponse>(
       API_BASE_URL + 'event/get-my-created-events'
     );
   }
 
   getById(id: string) {
-    return this.httpClient.get<ApiReponse>(`${this.apiUrl}/${id}`);
+    return this.httpClient.get<ApiResponse>(`${this.apiUrl}/${id}`);
   }
 
   create(event: Event) {
-    return this.httpClient.post<ApiReponse>(
-      `${this.apiUrl}/create`,
+    return this.httpClient.post<ApiResponse>(`${this.apiUrl}/create`, event);
+  }
+
+  update(eventId: string, event: Event) {
+    console.log(event);
+    return this.httpClient.post<ApiResponse>(
+      `${this.apiUrl}/update/${eventId}`,
       event
     );
   }
 
-  update(eventId: string, event: Event) {
-    console.log(event)
-    return this.httpClient.post<ApiReponse>(
-      `${this.apiUrl}/update/${eventId}`,
-      event
+  getPrivateQrCodePngImageLink(data: any) {
+    return this.httpClient.post<ApiResponse>(
+      `${this.apiUrl}/private-qr-code`,
+      data
     );
   }
 

@@ -4,11 +4,7 @@
       <ng-template #caption>
         <div class="d-flex align-items-center justify-content-between">
           <span class="fw-bold">My Events</span>
-          <p-button
-            icon="pi pi-plus-circle"
-            label="New"
-            [routerLink]="['/event/create']"
-          />
+          <p-button icon="pi pi-plus-circle" label="New" [routerLink]="['/event/create']" />
         </div>
       </ng-template>
 
@@ -48,16 +44,14 @@
             <br />
             <b>To</b>: {{ event.votingEndTime | date : "HH:mm, dd-MMMM-yyyy" }}
           </td>
-          <td class="text-center">
-            <p-badge *ngIf="isLarger(event.startTime, currentDate)" value="Not started" badgeSize="xlarge" severity="danger" />
-            <p-badge *ngIf="!isLarger(event.startTime, currentDate)" value="Started" badgeSize="xlarge" severity="success" />
+          <td class="text-center" [noWrap]="true">
+            <p-badge *ngIf="isLarger(event.startTime, currentDate)" value="Not Started" badgeSize="xlarge"
+              severity="danger" />
+            <p-badge *ngIf="!isLarger(event.startTime, currentDate)" value="Started" badgeSize="xlarge"
+              severity="success" />
           </td>
           <td class="text-end">
-            <p-button
-              icon="pi pi-pencil"
-              label="Edit"
-              [routerLink]="['/event/edit', event.id]"
-            />
+            <p-button icon="pi pi-pencil" label="Edit" [routerLink]="['/event/edit', event.id]" />
           </td>
         </tr>
       </ng-template>
