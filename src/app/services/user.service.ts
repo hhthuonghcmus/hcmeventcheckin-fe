@@ -4,8 +4,8 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { User } from '../interfaces/user.interface';
 import { CookieService } from 'ngx-cookie-service';
 import { API_BASE_URL } from '../constants/api.constant';
-import { ApiReponse } from '../interfaces/api-response.interface';
-import { LOGGEDIN_USER_KEY } from '../constants/cookie.constant';
+import { ApiResponse } from '../interfaces/api-response.interface';
+import { LOGGED_IN_USER_KEY } from '../constants/cookie.constant';
 import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
@@ -21,38 +21,41 @@ export class UserService {
   ) {}
 
   getRole() {
-    return this.httpClient.get<ApiReponse>(API_BASE_URL + 'user/get-role');
+    return this.httpClient.get<ApiResponse>(API_BASE_URL + 'user/get-role');
   }
 
   signUp(data: any) {
-    return this.httpClient.post<ApiReponse>(
+    return this.httpClient.post<ApiResponse>(
       API_BASE_URL + 'user/sign-up',
       data
     );
   }
 
   logIn(data: any) {
-    return this.httpClient.post<ApiReponse>(API_BASE_URL + 'user/log-in', data);
+    return this.httpClient.post<ApiResponse>(
+      API_BASE_URL + 'user/log-in',
+      data
+    );
   }
 
   getQrCodePngImageLink() {
-    return this.httpClient.get<ApiReponse>(
+    return this.httpClient.get<ApiResponse>(
       API_BASE_URL + 'user/get-qr-code-png-image-link'
     );
   }
 
   signOut() {
-    return this.httpClient.get<ApiReponse>(API_BASE_URL + 'user/sign-out');
+    return this.httpClient.get<ApiResponse>(API_BASE_URL + 'user/sign-out');
   }
- 
+
   clearLoggedInUser() {
-    this.cookieService.delete(LOGGEDIN_USER_KEY);
+    this.cookieService.delete(LOGGED_IN_USER_KEY);
     this.loggedInUser$.next(null);
   }
 
   getLoggedInUser(): User {
     let user: User = null;
-    const userCookie = this.cookieService.get(LOGGEDIN_USER_KEY);
+    const userCookie = this.cookieService.get(LOGGED_IN_USER_KEY);
     if (userCookie) {
       user = JSON.parse(userCookie) as User;
     }
@@ -63,7 +66,7 @@ export class UserService {
   getLoggedInUserRole(): string {
     let role = '';
     let user: User = null;
-    const userCookie = this.cookieService.get(LOGGEDIN_USER_KEY);
+    const userCookie = this.cookieService.get(LOGGED_IN_USER_KEY);
     if (userCookie) {
       user = JSON.parse(userCookie) as User;
       if (user) {

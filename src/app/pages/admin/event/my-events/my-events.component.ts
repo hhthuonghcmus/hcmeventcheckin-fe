@@ -3,7 +3,7 @@ import { Column } from '../../../../interfaces/table-column.interface';
 import { EventService } from '../../../../services/event.service';
 import { MessageService } from 'primeng/api';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ApiReponse } from '../../../../interfaces/api-response.interface';
+import { ApiResponse } from '../../../../interfaces/api-response.interface';
 import { TableModule } from 'primeng/table';
 import { RouterLink } from '@angular/router';
 import { Button } from 'primeng/button';
@@ -14,7 +14,7 @@ import { Event } from '../../../../interfaces/event.interface';
   selector: 'app-my-events',
   imports: [TableModule, CommonModule, Button, RouterLink, Badge],
   templateUrl: './my-events.component.html',
-  styleUrl: './my-events.component.scss'
+  styleUrl: './my-events.component.scss',
 })
 export class MyEventsComponent {
   myEvents: Event[];
@@ -40,7 +40,7 @@ export class MyEventsComponent {
         { field: 'questions.length', header: 'Questions' },
       ];
 
-      this.eventService.getMyEvents().subscribe((response: ApiReponse) => {
+      this.eventService.getMyEvents().subscribe((response: ApiResponse) => {
         this.myEvents = response.data as Event[];
       });
     }

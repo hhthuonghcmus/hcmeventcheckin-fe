@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/user.service';
 import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
-import { LOGGEDIN_USER_KEY } from '../../constants/cookie.constant';
+import { LOGGED_IN_USER_KEY } from '../../constants/cookie.constant';
 import { CookieService } from 'ngx-cookie-service';
 import { finalize } from 'rxjs';
 import { User } from '../../interfaces/user.interface';
@@ -67,7 +67,7 @@ export class LogInComponent {
             const expiresDate = new Date();
             expiresDate.setDate(expiresDate.getDate() + 1);
             this.cookieService.set(
-              LOGGEDIN_USER_KEY,
+              LOGGED_IN_USER_KEY,
               JSON.stringify(response.data),
               expiresDate
             );

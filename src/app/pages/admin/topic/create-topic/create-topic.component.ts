@@ -21,7 +21,7 @@ import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { TopicService } from '../../../../services/topic.service';
 import { MessageService } from 'primeng/api';
-import { ApiReponse } from '../../../../interfaces/api-response.interface';
+import { ApiResponse } from '../../../../interfaces/api-response.interface';
 import { Router, RouterLink } from '@angular/router';
 
 @Component({
@@ -35,7 +35,7 @@ import { Router, RouterLink } from '@angular/router';
     FormsModule,
     ButtonModule,
     RippleModule,
-    RouterLink
+    RouterLink,
   ],
   templateUrl: './create-topic.component.html',
   styleUrl: './create-topic.component.scss',
@@ -109,7 +109,7 @@ export class CreateTopicComponent {
       });
     } else {
       this.topicService.create(this.topicForm.value).subscribe({
-        next: (response: ApiReponse) => {
+        next: (response: ApiResponse) => {
           if (response['statusCode'] === 200) {
             this.messageService.add({
               severity: 'success',

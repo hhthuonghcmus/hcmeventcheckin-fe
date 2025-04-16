@@ -12,7 +12,7 @@ import {
 } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { map, Observable } from 'rxjs';
-import { ApiReponse } from '../../../../interfaces/api-response.interface';
+import { ApiResponse } from '../../../../interfaces/api-response.interface';
 import { QuestionService } from '../../../../services/question.service';
 import { TopicService } from '../../../../services/topic.service';
 import { Router, RouterLink } from '@angular/router';
@@ -54,7 +54,7 @@ import { ToggleButton } from 'primeng/togglebutton';
     RadioButton,
     FileUpload,
     TableModule,
-    ToggleButton
+    ToggleButton,
   ],
   templateUrl: './create-event.component.html',
   styleUrl: './create-event.component.scss',
@@ -73,7 +73,7 @@ export class CreateEventComponent {
 
   ngOnInit() {
     this.myTopics$ = this.topicService.getMyTopics().pipe(
-      map((response: ApiReponse) => {
+      map((response: ApiResponse) => {
         const myTopics = response.data as Topic[];
         return myTopics;
       })
@@ -133,7 +133,7 @@ export class CreateEventComponent {
       });
     } else {
       this.eventService.create(this.eventForm.value).subscribe({
-        next: (response: ApiReponse) => {
+        next: (response: ApiResponse) => {
           if (response['statusCode'] === 200) {
             this.messageService.add({
               severity: 'success',
