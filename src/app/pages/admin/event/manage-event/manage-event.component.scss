@@ -1,0 +1,7 @@
+::ng-deep .p-menu {
+  min-width: auto !important;
+}
+
+::ng-deep .p-menu-item.p-focus .p-menu-item-content {
+  background: #cad5df !important;
+}

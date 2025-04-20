@@ -1,0 +1,41 @@
+<p-table [value]="participants">
+    <ng-template #header>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Phone number</th>
+        <th class="text-center">QR Code</th>
+        <th class="text-center">Showed up</th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-participant>
+      <tr>
+        <td>{{ participants?.indexOf(participant) + 1 }}</td>
+        <td>{{ participant.name }}</td>
+        <td>{{ participant.phoneNumber }}</td>
+        <td class="text-center">
+          <p-button icon="pi pi-qrcode" [rounded]="true" (onClick)="showQrCode(participant.phoneNumber)">
+          </p-button>
+        </td>
+        <td class="text-center">
+          <p-button *ngIf="participant.participated" icon="pi pi-check" [rounded]="true" />
+          <p-button *ngIf="!participant.participated" icon="pi pi-times" [rounded]="true" severity="danger" />
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <p-dialog [(visible)]="isQrCodeDialogVisible" [modal]="true" [draggable]="false" [resizable]="false"
+  [dismissableMask]="true" [style]="{width: '90vw', maxWidth: '300px'}"
+  [breakpoints]="{'960px': '75vw', '640px': '90vw'}" header="QR Code">
+  <div class="d-flex justify-content-center">
+    <img [src]="qrCodeImageLink" alt="QR Code" *ngIf="qrCodeImageLink" class="img-fluid"
+      style="max-width: 100%; height: auto;" />
+  </div>
+  <ng-template pTemplate="footer">
+    <div class="d-flex justify-content-end">
+      <p-button icon="pi pi-times" label="Close" (onClick)="isQrCodeDialogVisible = false" severity="secondary">
+      </p-button>
+    </div>
+  </ng-template>
+</p-dialog>

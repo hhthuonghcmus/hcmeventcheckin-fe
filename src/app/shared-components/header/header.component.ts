@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { MenuItem } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { Menubar } from 'primeng/menubar';
 import { Button } from 'primeng/button';
 import { Avatar } from 'primeng/avatar';
@@ -11,7 +11,8 @@ import { Observable } from 'rxjs';
 import { UserService } from '../../services/user.service';
 import { User } from '../../interfaces/user.interface';
 import { ApiResponse } from '../../interfaces/api-response.interface';
-import { NgxScannerQrcodeComponent, LOAD_WASM } from 'ngx-scanner-qrcode';
+import { NgxScannerQrcodeComponent, LOAD_WASM, ScannerQRCodeResult } from 'ngx-scanner-qrcode';
+import { EventService } from '../../services/event.service';
 
 @Component({
   selector: 'app-header',
@@ -34,9 +35,10 @@ export class HeaderComponent {
   isLoggedIn: boolean;
   isQRCodeScannerDialogVisible = false;
   userMenuItems: MenuItem[] = [];
-  qrCodePngImageLink$: Observable<ApiResponse> = null;
+  isScanQrInCooldown = false;
+  scanQrCooldownTime = 3000;
 
-  constructor(private userService: UserService, private router: Router) {
+  constructor(private userService: UserService, private eventService: EventService, private messageService: MessageService, private router: Router) {
     this.loggedInUser$ = this.userService.loggedInUser$.asObservable();
 
     this.userMenuItems = [
@@ -48,7 +50,7 @@ export class HeaderComponent {
       {
         label: 'Scan private QR Code',
         icon: 'pi pi-qrcode',
-        command: () => this.getQrCodePngImageLink(),
+        command: () => this.showQrScanDialog(),
       },
       {
         label: 'Sign Out',
@@ -88,9 +90,8 @@ export class HeaderComponent {
     });
   }
 
-  getQrCodePngImageLink() {
+  showQrScanDialog() {
     this.isQRCodeScannerDialogVisible = true;
-    this.qrCodePngImageLink$ = this.userService.getQrCodePngImageLink();
   }
 
   signOut() {
@@ -102,6 +103,42 @@ export class HeaderComponent {
       error: (error) => {
         this.userService.clearLoggedInUser();
         this.router.navigate(['/']);
+      },
+    });
+  }
+
+  scanQrCode(qrCodeResult: ScannerQRCodeResult[]) {
+    if (this.isScanQrInCooldown) {
+      return;
+    }
+
+    this.isScanQrInCooldown = true;
+    setTimeout(() => {
+      this.isScanQrInCooldown = false;
+    }, this.scanQrCooldownTime);
+
+    this.eventService.participatePrivateEvent(JSON.parse(qrCodeResult[0].value)).subscribe({
+      next: (response: ApiResponse) => {
+        if (response.statusCode === 200) {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Check in',
+            detail: 'Successful',
+          });
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: response.message,
+          });
+        }
+      },
+      error: (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: "Qr Code is not valid",
+        });
       },
     });
   }

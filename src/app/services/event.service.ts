@@ -2,14 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { API_BASE_URL } from '../constants/api.constant';
 import { ApiResponse } from '../interfaces/api-response.interface';
-import { Topic } from '../interfaces/topic.interface';
-import { map } from 'rxjs';
+import { Event } from '../interfaces/event.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EventService {
   apiUrl = API_BASE_URL + 'event';
+  currentEvent: Event;
 
   constructor(private httpClient: HttpClient) {}
 
@@ -40,6 +40,20 @@ export class EventService {
       `${this.apiUrl}/private-qr-code`,
       data
     );
+  }
+
+  
+  participatePrivateEvent(data: any) {
+    console.log(data);
+    return this.httpClient.post<ApiResponse>(`${this.apiUrl}/participate-private-event`, data)
+  }
+
+  setCurrentEvent(event: Event){
+    this.currentEvent = event;
+  }
+
+  getCurrentEvent(){
+    return this.currentEvent;
   }
 
   // openVote(topicId: string) {

@@ -30,9 +30,7 @@ import { RadioButton } from 'primeng/radiobutton';
 import {
   FileSelectEvent,
   FileUpload,
-  FileUploadEvent,
 } from 'primeng/fileupload';
-import { UploadEvent } from '../../../../interfaces/upload-event.interface';
 import * as XLSX from 'xlsx';
 import { TableModule } from 'primeng/table';
 import { ToggleButton } from 'primeng/togglebutton';
@@ -100,7 +98,6 @@ export class CreateEventComponent {
   }
 
   selectParticipantsXlsxFile(event: FileSelectEvent) {
-    console.log(event.currentFiles);
     const file = event.currentFiles[0];
     if (file) {
       const reader = new FileReader();
@@ -124,7 +121,6 @@ export class CreateEventComponent {
   }
 
   createEvent() {
-    console.log(this.eventForm.value);
     if (this.eventForm.invalid) {
       this.messageService.add({
         severity: 'error',

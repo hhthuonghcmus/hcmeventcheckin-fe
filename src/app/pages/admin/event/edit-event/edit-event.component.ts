@@ -11,7 +11,6 @@ import {
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
-import { Dialog } from 'primeng/dialog';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InputText } from 'primeng/inputtext';
 import { RippleModule } from 'primeng/ripple';
@@ -28,9 +27,7 @@ import { RadioButton } from 'primeng/radiobutton';
 import {
   FileSelectEvent,
   FileUpload,
-  FileUploadEvent,
 } from 'primeng/fileupload';
-import { UploadEvent } from '../../../../interfaces/upload-event.interface';
 import * as XLSX from 'xlsx';
 import { TableModule } from 'primeng/table';
 import { ToggleButton } from 'primeng/togglebutton';
@@ -53,7 +50,6 @@ import { ToggleButton } from 'primeng/togglebutton';
     FileUpload,
     TableModule,
     ToggleButton,
-    Dialog,
   ],
   templateUrl: './edit-event.component.html',
   styleUrl: './edit-event.component.scss',
@@ -62,8 +58,6 @@ export class EditEventComponent {
   eventForm: FormGroup;
   myTopics$: Observable<Topic[]>;
   eventId: string;
-  isQrCodeDialogVisible = false;
-  qrCodeImageLink: string | null = null;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -72,7 +66,7 @@ export class EditEventComponent {
     private formBuilder: FormBuilder,
     private messageService: MessageService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.eventId = this.activatedRoute.snapshot.paramMap.get('id')!;
@@ -117,6 +111,7 @@ export class EditEventComponent {
           votingEndTime: new Date(event.votingEndTime),
           topicId: event.topicId,
         });
+        console.log(this.eventForm.value)
       },
       error: (error) => {
         this.messageService.add({
@@ -155,43 +150,6 @@ export class EditEventComponent {
         });
       };
     }
-  }
-
-  showQrCode(phoneNumber: string) {
-    if (!phoneNumber) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'QR Code Error',
-        detail: 'Phone number is required',
-      });
-      return;
-    }
-    const requestData = {
-      eventId: this.eventId,
-      phoneNumber: phoneNumber,
-    };
-
-    this.eventService.getPrivateQrCodePngImageLink(requestData).subscribe({
-      next: (response: ApiResponse) => {
-        if (response.statusCode === 200 && response.data) {
-          this.qrCodeImageLink = String(response.data);
-          this.isQrCodeDialogVisible = true;
-        } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'QR Code Error',
-            detail: response.message || 'Failed to generate QR code',
-          });
-        }
-      },
-      error: (error) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'QR Code Error',
-          detail: 'Failed to generate QR code. Please try again.',
-        });
-      },
-    });
   }
 
   confirm() {
