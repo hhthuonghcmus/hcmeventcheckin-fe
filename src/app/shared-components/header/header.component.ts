@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { MenuItem, MessageService } from 'primeng/api';
 import { Menubar } from 'primeng/menubar';
-import { Button } from 'primeng/button';
+import { Button, ButtonModule } from 'primeng/button';
 import { Avatar } from 'primeng/avatar';
 import { Menu } from 'primeng/menu';
 import { Dialog } from 'primeng/dialog';
@@ -11,8 +11,14 @@ import { Observable } from 'rxjs';
 import { UserService } from '../../services/user.service';
 import { User } from '../../interfaces/user.interface';
 import { ApiResponse } from '../../interfaces/api-response.interface';
-import { NgxScannerQrcodeComponent, LOAD_WASM, ScannerQRCodeResult } from 'ngx-scanner-qrcode';
+import { NgxScannerQrcodeComponent, ScannerQRCodeResult } from 'ngx-scanner-qrcode';
 import { EventService } from '../../services/event.service';
+import { FloatLabel } from 'primeng/floatlabel';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { InputText } from 'primeng/inputtext';
+import { InputGroup } from 'primeng/inputgroup';
+import { InputGroupAddon } from 'primeng/inputgroupaddon';
+import { InputNumber, InputNumberModule } from 'primeng/inputnumber';
 
 @Component({
   selector: 'app-header',
@@ -21,24 +27,32 @@ import { EventService } from '../../services/event.service';
     Avatar,
     Menu,
     Menubar,
-    Button,
     Dialog,
     RouterLink,
+    FloatLabel,
+    InputText,
     NgxScannerQrcodeComponent,
+    FormsModule,
+    ButtonModule,
+    ReactiveFormsModule
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })
 export class HeaderComponent {
-  appMenuItems: MenuItem[] = [];
+  navbarMenuItems: MenuItem[] = [];
   loggedInUser$: Observable<User>;
   isLoggedIn: boolean;
   isQRCodeScannerDialogVisible = false;
   userMenuItems: MenuItem[] = [];
   isScanQrInCooldown = false;
   scanQrCooldownTime = 3000;
+  isPublicEventPINDialogVisible = false;
+  publicEventPIN: string;
+  publicEventPhoneNumber: string;
+  participatePublicEventForm: FormGroup;
 
-  constructor(private userService: UserService, private eventService: EventService, private messageService: MessageService, private router: Router) {
+  constructor(private userService: UserService, private eventService: EventService, private messageService: MessageService, private router: Router, private formBuilder: FormBuilder) {
     this.loggedInUser$ = this.userService.loggedInUser$.asObservable();
 
     this.userMenuItems = [
@@ -48,9 +62,9 @@ export class HeaderComponent {
         routerLink: 'settings',
       },
       {
-        label: 'Scan private QR Code',
-        icon: 'pi pi-qrcode',
-        command: () => this.showQrScanDialog(),
+        label: 'Participate public event',
+        icon: 'pi pi-user-plus',
+        command: () => this.showPublicEventPINDialog(),
       },
       {
         label: 'Sign Out',
@@ -63,7 +77,7 @@ export class HeaderComponent {
   ngOnInit() {
     this.userService.loggedInUser$.next(this.userService.getLoggedInUser());
     this.loggedInUser$.subscribe((loggedInUser: User) => {
-      this.appMenuItems = [
+      this.navbarMenuItems = [
         {
           label: 'Home',
           icon: 'pi pi-home',
@@ -73,8 +87,8 @@ export class HeaderComponent {
 
       const role = this.userService.getLoggedInUserRole();
       if (role === 'Admin') {
-        this.appMenuItems = [
-          ...this.appMenuItems,
+        this.navbarMenuItems = [
+          ...this.navbarMenuItems,
           {
             label: 'My Events',
             icon: 'pi pi-list',
@@ -86,7 +100,38 @@ export class HeaderComponent {
             routerLink: 'topic/my-topics',
           },
         ];
+
+        this.userMenuItems = [
+          {
+            label: 'Settings',
+            icon: 'pi pi-cog',
+            routerLink: 'settings',
+          },
+          {
+            label: 'Participate public event',
+            icon: 'pi pi-user-plus',
+            command: () => this.showPublicEventPINDialog(),
+          },
+          {
+            label: 'Scan private QR Code',
+            icon: 'pi pi-qrcode',
+            command: () => this.showQrScanDialog(),
+          },
+          {
+            label: 'Sign Out',
+            icon: 'pi pi-sign-out',
+            command: () => this.signOut(),
+          },
+        ];
       }
+    });
+
+    this.participatePublicEventForm = this.formBuilder.group({
+      pin: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6), Validators.pattern(/^\d+$/)]],
+      phoneNumber: [
+        '',
+        [Validators.required, Validators.pattern(/^\d{10,11}$/)],
+      ],
     });
   }
 
@@ -141,5 +186,43 @@ export class HeaderComponent {
         });
       },
     });
+  }
+
+  showPublicEventPINDialog() {
+    this.isPublicEventPINDialogVisible = true;
+  }
+
+  participatePublicEvent() {
+    console.log(this.participatePublicEventForm.value)
+    if (this.participatePublicEventForm.valid) {
+      this.eventService.participatePrivateEvent(this.participatePublicEventForm.value).subscribe({
+        next: (response) => {
+          if (response['statusCode'] === 200) {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Participate public event',
+              detail: 'Successful',
+            });
+          } else {
+
+          }
+        },
+        error: (error) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Participate public event',
+            detail: 'Error',
+          });
+        },
+        complete: () => { },
+      });
+    } else {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Participate public event',
+        detail: 'Error',
+      });
+    }
+
   }
 }

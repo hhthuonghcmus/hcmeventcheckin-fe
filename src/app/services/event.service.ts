@@ -44,8 +44,11 @@ export class EventService {
 
   
   participatePrivateEvent(data: any) {
-    console.log(data);
     return this.httpClient.post<ApiResponse>(`${this.apiUrl}/participate-private-event`, data)
+  }
+
+  participatePublicEvent(data: any) {
+    return this.httpClient.post<ApiResponse>(`${this.apiUrl}/participate-public-event`, data)
   }
 
   setCurrentEvent(event: Event){
