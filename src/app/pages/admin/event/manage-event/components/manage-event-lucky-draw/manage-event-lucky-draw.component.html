@@ -1,1 +1,61 @@
-<p>manage-event-lucky-draw works!</p>
+<div class="grid">
+  <div class="col-12">
+    <p-card header="Lucky Draw">
+      <div class="d-flex flex-column align-items-center gap-3">
+        <div class="text-center" *ngIf="isSpinning">
+          <div class="drawing-animation">
+            <h1>{{ cyclingName }}</h1>
+          </div>
+        </div>
+        <div
+          class="text-center winner-animation"
+          *ngIf="!isSpinning && currentWinner"
+        >
+          <h3><i class="pi pi-gift" style="font-size: larger"></i> Winner!</h3>
+          <h1>{{ currentWinner.name }}</h1>
+          <h4>{{ currentWinner.phoneNumber }}</h4>
+        </div>
+        <div class="d-flex justify-content-center gap-3">
+          <p-button
+            label="Draw"
+            icon="pi pi-gift"
+            (onClick)="startLuckyDraw()"
+            [disabled]="isSpinning"
+          >
+          </p-button>
+          <p-button
+            label="Reset"
+            icon="pi pi-refresh"
+            severity="secondary"
+            (onClick)="resetLuckyDraw()"
+            [disabled]="isSpinning || winners.length === 0"
+          >
+          </p-button>
+        </div>
+      </div>
+    </p-card>
+  </div>
+
+  <div class="col-12 mt-3">
+    <p-card header="Winners History">
+      <p-table [value]="winners" [tableStyle]="{ 'min-width': '50rem' }">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Phone Number</th>
+            <th>Draw Time</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-winner let-i="rowIndex">
+          <tr>
+            <td>{{ i + 1 }}</td>
+            <td>{{ winner.name }}</td>
+            <td>{{ winner.phoneNumber }}</td>
+            <td>{{ winner.drawTime | date : "short" }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-card>
+  </div>
+</div>

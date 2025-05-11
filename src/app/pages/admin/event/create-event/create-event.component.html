@@ -1,7 +1,13 @@
 <form class="container pt-3 d-grid gap-3" [formGroup]="eventForm">
   <div class="card p-3">
     <p-floatlabel variant="in">
-      <input pInputText formControlName="name" pSize="large" class="w-100" />
+      <input
+        pInputText
+        formControlName="name"
+        pSize="large"
+        class="w-100"
+        title="Event name"
+      />
       <label for="name"
         >Event name
         <small
@@ -47,6 +53,7 @@
             formControlName="location"
             pSize="small"
             class="w-100"
+            title="Event location"
           />
           <label for="location">Location</label>
         </p-floatlabel>
@@ -60,6 +67,7 @@
             rows="5"
             pSize="small"
             class="w-100"
+            title="Event description"
           ></textarea>
           <label for="description">Description</label>
         </p-floatlabel>
@@ -78,8 +86,11 @@
             </div>
           </div>
         </div>
-  
-        <div class="mt-2 mt-md-0 w-100 d-flex justify-content-start" *ngIf="eventForm.get('isPrivate').value">
+
+        <div
+          class="mt-2 mt-md-0 w-100 d-flex justify-content-start"
+          *ngIf="eventForm.get('isPrivate').value"
+        >
           <p-fileupload
             chooseLabel="Participants.xlsx"
             maxFileSize="1000000"
@@ -91,14 +102,22 @@
         </div>
       </div>
 
-      <div
-        class="col-12"
-        *ngIf="eventForm.get('isPrivate').value"
-      >
-        <div>Participants: {{ participants.value.length }} 
-            <p-togglebutton *ngIf="participants.value.length > 0" formControlName="isParticipantTableVisible" onLabel="Hide" offLabel="Show" onIcon="pi pi-eye-slash" offIcon="pi pi-eye"/>
+      <div class="col-12" *ngIf="eventForm.get('isPrivate').value">
+        <div>
+          Participants: {{ participants.value.length }}
+          <p-togglebutton
+            *ngIf="participants.value.length > 0"
+            formControlName="isParticipantTableVisible"
+            onLabel="Hide"
+            offLabel="Show"
+            onIcon="pi pi-eye-slash"
+            offIcon="pi pi-eye"
+          />
         </div>
-        <p-table [value]="participants.value" *ngIf="eventForm.get('isParticipantTableVisible').value">
+        <p-table
+          [value]="participants.value"
+          *ngIf="eventForm.get('isParticipantTableVisible').value"
+        >
           <ng-template #header>
             <tr>
               <th>#</th>
@@ -119,10 +138,10 @@
   </div>
 
   <div class="card p-3 d-flex gap-2">
-    <div class="row d-flex align-items-center gap-1">
+    <div class="row d-flex align-items-center">
       <span class="text-secondary">Lucky draw</span>
 
-      <div class="col-12 col-sm-5 col-md-4">
+      <div class="col-sm-12 col-md-4 mt-2">
         <p-floatlabel variant="in">
           <p-datepicker
             formControlName="luckyDrawStartTime"
@@ -146,7 +165,7 @@
         </p-floatlabel>
       </div>
 
-      <div class="col-12 col-sm-5 col-md-4">
+      <div class="col-sm-12 col-md-4 mt-2">
         <p-floatlabel variant="in">
           <p-datepicker
             formControlName="luckyDrawEndTime"
@@ -171,10 +190,10 @@
       </div>
     </div>
 
-    <div class="row d-flex align-items-center gap-1">
+    <div class="row d-flex align-items-center">
       <span class="text-secondary">Voting</span>
 
-      <div class="col-12 col-sm-5 col-md-4">
+      <div class="col-sm-12 col-md-4 mt-2">
         <p-floatlabel variant="in">
           <p-datepicker
             formControlName="votingStartTime"
@@ -198,7 +217,7 @@
         </p-floatlabel>
       </div>
 
-      <div class="col-12 col-sm-5 col-md-4">
+      <div class="col-sm-12 col-md-4 mt-2">
         <p-floatlabel variant="in">
           <p-datepicker
             formControlName="votingEndTime"
@@ -222,7 +241,7 @@
         </p-floatlabel>
       </div>
 
-      <div class="col-12 col-sm-5 col-md-4">
+      <div class="col-sm-12 col-md-4 mt-2">
         <p-floatlabel variant="in">
           <p-select
             [autoDisplayFirst]="false"

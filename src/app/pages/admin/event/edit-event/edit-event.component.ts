@@ -24,10 +24,7 @@ import { Event } from '../../../../interfaces/event.interface';
 import { Topic } from '../../../../interfaces/topic.interface';
 import { TopicService } from '../../../../services/topic.service';
 import { RadioButton } from 'primeng/radiobutton';
-import {
-  FileSelectEvent,
-  FileUpload,
-} from 'primeng/fileupload';
+import { FileSelectEvent, FileUpload } from 'primeng/fileupload';
 import * as XLSX from 'xlsx';
 import { TableModule } from 'primeng/table';
 import { ToggleButton } from 'primeng/togglebutton';
@@ -66,7 +63,7 @@ export class EditEventComponent {
     private formBuilder: FormBuilder,
     private messageService: MessageService,
     private router: Router
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.eventId = this.activatedRoute.snapshot.paramMap.get('id')!;
@@ -111,7 +108,7 @@ export class EditEventComponent {
           votingEndTime: new Date(event.votingEndTime),
           topicId: event.topicId,
         });
-        console.log(this.eventForm.value)
+        console.log(this.eventForm.value);
       },
       error: (error) => {
         this.messageService.add({
