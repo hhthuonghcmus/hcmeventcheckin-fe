@@ -23,7 +23,11 @@
                 >
               </div>
             </ng-container>
-            <div class="d-flex justify-content-center w-100" *ngIf="getCharData(question.id) as chartData">
+
+            <div
+              class="d-flex justify-content-center w-100"
+              *ngIf="getCharData(question.id) as chartData"
+            >
               <div class="col-6 col-md-3">
                 <canvas
                   baseChart

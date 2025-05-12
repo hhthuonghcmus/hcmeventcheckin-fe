@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, RouterModule, RouterOutlet } from '@angular/router';
 import { MenuItem } from 'primeng/api';
-import { Button } from 'primeng/button';
 import { Menu } from 'primeng/menu';
 import { EventService } from '../../../../services/event.service';
 import { ApiResponse } from '../../../../interfaces/api-response.interface';
@@ -10,7 +9,7 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-manage-event',
-  imports: [Button, Menu, RouterOutlet, RouterLink, RouterModule, CommonModule],
+  imports: [Menu, RouterOutlet, RouterModule, CommonModule],
   templateUrl: './manage-event.component.html',
   styleUrl: './manage-event.component.scss'
 })
@@ -29,7 +28,7 @@ export class ManageEventComponent {
         const event = response.data as Event;
         this.event = event;
         this.eventService.setCurrentEvent(event);
-        
+
         this.manageEventMenuItems = [
           { label: 'Details', icon: 'pi pi-plus', routerLink: `/event/manage/${this.eventId}/details` },
           { label: 'Participants', icon: 'pi pi-user', routerLink: `/event/manage/${this.eventId}/participants` },
@@ -38,10 +37,8 @@ export class ManageEventComponent {
         ];
       },
       error: (error) => {
-        
+
       },
     });
-
-
   }
 }
