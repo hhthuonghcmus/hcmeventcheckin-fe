@@ -16,9 +16,8 @@ import { EventService } from '../../services/event.service';
 import { FloatLabel } from 'primeng/floatlabel';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InputText } from 'primeng/inputtext';
-import { InputGroup } from 'primeng/inputgroup';
-import { InputGroupAddon } from 'primeng/inputgroupaddon';
-import { InputNumber, InputNumberModule } from 'primeng/inputnumber';
+import { CookieService } from 'ngx-cookie-service';
+import { USER_PARTICIPATED_EVENT_PIN, USER_PHONE_NUMBER } from '../../constants/cookie.constant';
 
 @Component({
   selector: 'app-header',
@@ -47,12 +46,12 @@ export class HeaderComponent {
   userMenuItems: MenuItem[] = [];
   isScanQrInCooldown = false;
   scanQrCooldownTime = 3000;
-  isPublicEventPINDialogVisible = false;
+  isEventPINDialogVisible = false;
   publicEventPIN: string;
   publicEventPhoneNumber: string;
-  participatePublicEventForm: FormGroup;
+  participateEventForm: FormGroup;
 
-  constructor(private userService: UserService, private eventService: EventService, private messageService: MessageService, private router: Router, private formBuilder: FormBuilder) {
+  constructor(private cookieService: CookieService, private userService: UserService, private eventService: EventService, private messageService: MessageService, private router: Router, private formBuilder: FormBuilder) {
     this.loggedInUser$ = this.userService.loggedInUser$.asObservable();
 
     this.userMenuItems = [
@@ -60,11 +59,6 @@ export class HeaderComponent {
         label: 'Settings',
         icon: 'pi pi-cog',
         routerLink: 'settings',
-      },
-      {
-        label: 'Participate public event',
-        icon: 'pi pi-user-plus',
-        command: () => this.showPublicEventPINDialog(),
       },
       {
         label: 'Sign Out',
@@ -82,6 +76,11 @@ export class HeaderComponent {
           label: 'Home',
           icon: 'pi pi-home',
           routerLink: '/',
+        },
+        {
+          label: 'Participate event',
+          icon: 'pi pi-user-plus',
+          command: () => this.showParticipateEventPINDialog(),
         },
       ];
 
@@ -108,11 +107,6 @@ export class HeaderComponent {
             routerLink: 'settings',
           },
           {
-            label: 'Participate public event',
-            icon: 'pi pi-user-plus',
-            command: () => this.showPublicEventPINDialog(),
-          },
-          {
             label: 'Scan private QR Code',
             icon: 'pi pi-qrcode',
             command: () => this.showQrScanDialog(),
@@ -126,7 +120,7 @@ export class HeaderComponent {
       }
     });
 
-    this.participatePublicEventForm = this.formBuilder.group({
+    this.participateEventForm = this.formBuilder.group({
       pin: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6), Validators.pattern(/^\d+$/)]],
       phoneNumber: [
         '',
@@ -152,7 +146,7 @@ export class HeaderComponent {
     });
   }
 
-  scanQrCode(qrCodeResult: ScannerQRCodeResult[]) {
+  scanPrivateEventQrCode(qrCodeResult: ScannerQRCodeResult[]) {
     if (this.isScanQrInCooldown) {
       return;
     }
@@ -162,7 +156,7 @@ export class HeaderComponent {
       this.isScanQrInCooldown = false;
     }, this.scanQrCooldownTime);
 
-    this.eventService.participatePrivateEvent(JSON.parse(qrCodeResult[0].value)).subscribe({
+    this.eventService.checkinPrivateEvent(JSON.parse(qrCodeResult[0].value)).subscribe({
       next: (response: ApiResponse) => {
         if (response.statusCode === 200) {
           this.messageService.add({
@@ -188,30 +182,50 @@ export class HeaderComponent {
     });
   }
 
-  showPublicEventPINDialog() {
-    this.isPublicEventPINDialogVisible = true;
+  showParticipateEventPINDialog() {
+    this.isEventPINDialogVisible = true;
   }
 
-  participatePublicEvent() {
-    console.log(this.participatePublicEventForm.value)
-    if (this.participatePublicEventForm.valid) {
-      this.eventService.participatePrivateEvent(this.participatePublicEventForm.value).subscribe({
+  participateEvent() {
+    console.log(this.participateEventForm.value)
+    if (this.participateEventForm.valid) {
+      this.eventService.participateEvent(this.participateEventForm.value).subscribe({
         next: (response) => {
           if (response['statusCode'] === 200) {
             this.messageService.add({
-              severity: 'error',
-              summary: 'Participate public event',
+              severity: 'success',
+              summary: 'Participate event',
               detail: 'Successful',
             });
-          } else {
 
+            const expiresDate = new Date();
+            expiresDate.setDate(expiresDate.getDate() + 1);
+            this.cookieService.set(
+              USER_PHONE_NUMBER,
+              this.participateEventForm.value["phoneNumber"],
+              expiresDate
+            );
+            this.cookieService.set(
+              USER_PARTICIPATED_EVENT_PIN,
+              this.participateEventForm.value["pin"],
+              expiresDate
+            );
+
+            this.isEventPINDialogVisible = false;
+            this.router.navigate(["/"])
+          } else {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Participate event',
+              detail: response.message,
+            });
           }
         },
         error: (error) => {
           this.messageService.add({
             severity: 'error',
-            summary: 'Participate public event',
-            detail: 'Error',
+            summary: 'Participate event',
+            detail: error,
           });
         },
         complete: () => { },
@@ -219,7 +233,7 @@ export class HeaderComponent {
     } else {
       this.messageService.add({
         severity: 'error',
-        summary: 'Participate public event',
+        summary: 'Participate event',
         detail: 'Error',
       });
     }

@@ -52,22 +52,4 @@ export class TopicService {
       API_BASE_URL + 'topic/get-topic-opened-for-voting'
     );
   }
-
-  submiteVote(topicId: string, data: any) {
-    return this.httpClient.post<ApiResponse>(
-      API_BASE_URL + `topic/submit-vote/${topicId}`,
-      data
-    );
-  }
-
-  hasVoted(topicId: string) {
-    return this.httpClient
-      .get<ApiResponse>(API_BASE_URL + `topic/has-voted/${topicId}`)
-      .pipe(
-        map((response: ApiResponse) => {
-          const hasVoted = response.data as unknown as boolean;
-          return hasVoted;
-        })
-      );
-  }
 }

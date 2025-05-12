@@ -56,7 +56,7 @@
       <ngx-scanner-qrcode
         #action="scanner"
         [isBeep]="false"
-        (event)="scanQrCode($event)"
+        (event)="scanPrivateEventQrCode($event)"
       ></ngx-scanner-qrcode>
       <p *ngIf="action.isLoading">⌛ Loading...</p>
       <p-button
@@ -68,11 +68,11 @@
 
   <div class="position-relative w-auto">
     <form
-      [formGroup]="participatePublicEventForm"
-      (ngSubmit)="participatePublicEvent()"
+      [formGroup]="participateEventForm"
+      (ngSubmit)="participateEvent()"
     >
       <p-dialog
-        [(visible)]="isPublicEventPINDialogVisible"
+        [(visible)]="isEventPINDialogVisible"
         [modal]="true"
         [styleClass]="'w-75'"
         [style]="{ 'max-width': '300px' }"
@@ -87,16 +87,16 @@
           <div class="text-danger">
             <small
               *ngIf="
-                participatePublicEventForm.get('pin')?.hasError('required')
+                participateEventForm.get('pin')?.hasError('required')
               "
             >
               (required)</small
             >
             <small
               *ngIf="
-                participatePublicEventForm.get('pin')?.hasError('minlength') ||
-                participatePublicEventForm.get('pin')?.hasError('maxlength') ||
-                participatePublicEventForm.get('pin')?.hasError('pattern')
+                participateEventForm.get('pin')?.hasError('minlength') ||
+                participateEventForm.get('pin')?.hasError('maxlength') ||
+                participateEventForm.get('pin')?.hasError('pattern')
               "
               >(6 digits)</small
             >
@@ -115,7 +115,7 @@
           <div class="text-danger">
             <small
               *ngIf="
-                participatePublicEventForm
+                participateEventForm
                   .get('phoneNumber')
                   ?.hasError('required')
               "
@@ -124,7 +124,7 @@
             >
             <small
               *ngIf="
-                participatePublicEventForm
+                participateEventForm
                   .get('phoneNumber')
                   ?.hasError('pattern')
               "
@@ -136,7 +136,7 @@
             pButton
             type="submit"
             label="Go"
-            [disabled]="participatePublicEventForm.invalid"
+            [disabled]="participateEventForm.invalid"
           ></button>
         </div>
       </p-dialog>

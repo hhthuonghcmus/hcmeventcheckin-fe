@@ -16,6 +16,7 @@
         <tr>
           <th class="text-start">#</th>
           <th>Name</th>
+          <th class="text-center">PIN</th>
           <th class="text-center">Start time</th>
           <th class="text-center">Lucky draw</th>
           <th class="text-center">Voting</th>
@@ -31,6 +32,9 @@
           </td>
           <td>
             {{ event.name }}
+          </td>
+          <td class="text-center">
+            {{ event.pin }}
           </td>
           <td class="text-center">
             {{ event.startTime | date : "HH:mm, dd-MMMM-yyyy " }}

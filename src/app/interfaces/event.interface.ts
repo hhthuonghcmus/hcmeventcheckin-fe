@@ -1,4 +1,5 @@
 import { Participant } from './participant.interface';
+import { Topic } from './topic.interface';
 
 export interface Event {
   id: string;
@@ -13,4 +14,7 @@ export interface Event {
   votingStartTime: Date;
   votingEndTime: Date;
   topicId: string;
+  pin: string;
+
+  topic: Topic;
 }

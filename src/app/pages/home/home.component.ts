@@ -23,6 +23,12 @@ import { Question } from '../../interfaces/question.interface';
 import { MessageService } from 'primeng/api';
 import { Observable, of } from 'rxjs';
 import { UserService } from '../../services/user.service';
+import { EventService } from '../../services/event.service';
+import { CookieService } from 'ngx-cookie-service';
+import { USER_PARTICIPATED_EVENT_PIN, USER_PHONE_NUMBER } from '../../constants/cookie.constant';
+import { Event } from '../../interfaces/event.interface';
+import { response } from 'express';
+import { Vote } from '../../interfaces/vote.interface';
 
 @Component({
   selector: 'app-home',
@@ -43,44 +49,59 @@ export class HomeComponent {
   topicOpenedForVoting: Topic;
   topicVoteForm: FormGroup;
   hasVoted$: Observable<boolean>;
+  event: Event;
+  phoneNumber: string;
+  votes: Vote[] = [];
 
   constructor(
     private topicService: TopicService,
     private formBuilder: FormBuilder,
     private messageService: MessageService,
     private router: Router,
-    private userService: UserService
-  ) {}
+    private userService: UserService,
+    private eventService: EventService,
+    private cookieService: CookieService
+  ) { }
 
   ngOnInit() {
-    this.topicVoteForm = this.formBuilder.group({});
+    this.phoneNumber = this.cookieService.get(USER_PHONE_NUMBER);
+    if (this.phoneNumber) {
+      this.eventService
+        .getParticipatedEvent(this.phoneNumber)
+        .subscribe((response: ApiResponse) => {
+          if (response.statusCode === 200) {
+            this.event = response.data as Event;
+            this.topicOpenedForVoting = this.event.topic;
+            console.log(this.topicOpenedForVoting)
+            if (
+              this.topicOpenedForVoting &&
+              this.topicOpenedForVoting.questions
+            ) {
+              this.topicOpenedForVoting.questions.forEach(
+                (question: Question) => {
+                  this.topicVoteForm.addControl(
+                    question.id.toString(),
+                    this.formBuilder.control('', [Validators.required])
+                  );
+                }
+              );
+            }
 
-    this.topicService
-      .getTopicOpenedForVoting()
-      .subscribe((response: ApiResponse) => {
-        if (response.statusCode === 200) {
-          this.topicOpenedForVoting = response.data as Topic;
-          if (
-            this.topicOpenedForVoting &&
-            this.topicOpenedForVoting.questions
-          ) {
-            this.topicOpenedForVoting.questions.forEach(
-              (question: Question) => {
-                this.topicVoteForm.addControl(
-                  question.id.toString(),
-                  this.formBuilder.control('', [Validators.required])
-                );
-              }
-            );
+            this.eventService.getVotesByPhoneNumber(
+              this.event.id,
+              this.phoneNumber
+            ).subscribe((response: Vote[]) => {
+              this.votes = response;
+              this.hasVoted$ = of(this.votes.length !== 0)
+            });
+
+          } else {
+            this.topicOpenedForVoting = null;
           }
+        });
+    }
 
-          this.hasVoted$ = this.topicService.hasVoted(
-            this.topicOpenedForVoting.id
-          );
-        } else {
-          this.topicOpenedForVoting = null;
-        }
-      });
+    this.topicVoteForm = this.formBuilder.group({});
   }
 
   submitVote() {
@@ -100,16 +121,34 @@ export class HomeComponent {
       }
     });
 
-    this.topicService
-      .submiteVote(this.topicOpenedForVoting.id, questionIds_answerIds)
+    this.eventService
+      .submitVote(this.event.id, this.phoneNumber, questionIds_answerIds)
       .subscribe((response: ApiResponse) => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Create topic',
-          detail: 'Successfully',
-        });
+        if (response.statusCode === 200) {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Submit vote',
+            detail: 'Successfully',
+          });
 
-        this.hasVoted$ = of(true);
+          window.location.href = "/";
+        }
+        else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Submit vote',
+            detail: response.message,
+          });
+        }
       });
+  }
+
+  isAnswerSelected(questionId: string, answerId: string) {
+    const vote = this.votes.find(x => x.questionId === questionId && x.answerId === answerId);
+    if (vote) {
+      return true;
+    }
+
+    return false;
   }
 }
