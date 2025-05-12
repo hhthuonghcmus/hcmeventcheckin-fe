@@ -87,14 +87,12 @@ export class HomeComponent {
               );
             }
 
-            this.eventService.getVotes(
+            this.eventService.getVotesByPhoneNumber(
               this.event.id,
               this.phoneNumber
             ).subscribe((response: Vote[]) => {
               this.votes = response;
-              console.log(this.votes);
               this.hasVoted$ = of(this.votes.length !== 0)
-              console.log(this.votes.length !== 0);
             });
 
           } else {

@@ -5,6 +5,7 @@ import { ApiResponse } from '../interfaces/api-response.interface';
 import { Event } from '../interfaces/event.interface';
 import { map } from 'rxjs';
 import { Vote } from '../interfaces/vote.interface';
+import { StringDecoder } from 'string_decoder';
 
 @Injectable({
   providedIn: 'root',
@@ -91,7 +92,7 @@ export class EventService {
       );
   }
 
-  getVotes(eventId: string, phoneNumber: string) {
+  getVotesByPhoneNumber(eventId: string, phoneNumber: string) {
     const data = {
       eventId, phoneNumber
     }
@@ -105,6 +106,18 @@ export class EventService {
         })
       );
   }
+
+  getAllVotes(eventId: string) {
+    return this.httpClient
+      .get<ApiResponse>(API_BASE_URL + `event/get-votes/${eventId}`)
+      .pipe(
+        map((response: ApiResponse) => {
+          const votes = response.data as Vote[];
+          return votes;
+        })
+      );
+  }
+
   // openVote(topicId: string) {
   //   return this.httpClient.get<ApiReponse>(
   //     API_BASE_URL + `event/open-vote/${topicId}`

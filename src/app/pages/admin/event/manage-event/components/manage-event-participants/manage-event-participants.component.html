@@ -18,8 +18,8 @@
           </p-button>
         </td>
         <td class="text-center">
-          <p-button *ngIf="participant.participated" icon="pi pi-check" [rounded]="true" />
-          <p-button *ngIf="!participant.participated" icon="pi pi-times" [rounded]="true" severity="danger" />
+          <p-button *ngIf="participant.checkedIn" icon="pi pi-check" [rounded]="true" />
+          <p-button *ngIf="!participant.checkedIn" icon="pi pi-times" [rounded]="true" severity="danger" />
         </td>
       </tr>
     </ng-template>

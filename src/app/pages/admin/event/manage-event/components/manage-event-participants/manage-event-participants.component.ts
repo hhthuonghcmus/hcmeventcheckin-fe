@@ -34,41 +34,41 @@ export class ManageEventParticipantsComponent {
   }
 
   showQrCode(phoneNumber: string) {
-      if (!phoneNumber) {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'QR Code Error',
-          detail: 'Phone number is required',
-        });
-        return;
-      }
-      const requestData = {
-        eventId: this.event.id,
-        phoneNumber: phoneNumber,
-      };
-  
-      this.eventService.getPrivateQrCodePngImageLink(requestData).subscribe({
-        next: (response: ApiResponse) => {
-          if (response.statusCode === 200 && response.data) {
-            this.qrCodeImageLink = String(response.data);
-            this.isQrCodeDialogVisible = true;
-          } else {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'QR Code Error',
-              detail: response.message || 'Failed to generate QR code',
-            });
-          }
-        },
-        error: (error) => {
+    if (!phoneNumber) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'QR Code Error',
+        detail: 'Phone number is required',
+      });
+      return;
+    }
+    const requestData = {
+      eventId: this.event.id,
+      phoneNumber: phoneNumber,
+    };
+
+    this.eventService.getPrivateQrCodePngImageLink(requestData).subscribe({
+      next: (response: ApiResponse) => {
+        if (response.statusCode === 200 && response.data) {
+          this.qrCodeImageLink = String(response.data);
+          this.isQrCodeDialogVisible = true;
+        } else {
           this.messageService.add({
             severity: 'error',
             summary: 'QR Code Error',
-            detail: 'Failed to generate QR code. Please try again.',
+            detail: response.message || 'Failed to generate QR code',
           });
-        },
-      });
-    }
+        }
+      },
+      error: (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'QR Code Error',
+          detail: 'Failed to generate QR code. Please try again.',
+        });
+      },
+    });
+  }
 
-    
+
 }
