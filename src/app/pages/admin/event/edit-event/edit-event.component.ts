@@ -128,7 +128,6 @@ export class EditEventComponent {
   }
 
   selectParticipantsXlsxFile(event: FileSelectEvent) {
-    console.log(event.currentFiles);
     const file = event.currentFiles[0];
     if (file) {
       const reader = new FileReader();
@@ -138,14 +137,14 @@ export class EditEventComponent {
         const workbook = XLSX.read(data, { type: 'array' });
         const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
         const jsonData = XLSX.utils.sheet_to_json(firstSheet);
-        console.log(jsonData);
-        this.participants.controls = [];
+
+        this.participants.setValue([]);
         jsonData.forEach((row: any) => {
-          console.log(row);
           const propertyNames = Object.keys(row);
           this.participants.value.push({
             name: row[propertyNames[0]],
             phoneNumber: row[propertyNames[1]],
+            luckydrawCode: row[propertyNames[2]],
           });
         });
       };

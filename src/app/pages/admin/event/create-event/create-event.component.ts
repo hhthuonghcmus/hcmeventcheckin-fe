@@ -108,12 +108,13 @@ export class CreateEventComponent {
         const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
         const jsonData = XLSX.utils.sheet_to_json(firstSheet);
 
-        this.participants.controls = [];
+        this.participants.setValue([]);
         jsonData.forEach((row: any) => {
           const propertyNames = Object.keys(row);
           this.participants.value.push({
             name: row[propertyNames[0]],
             phoneNumber: row[propertyNames[1]],
+            luckydrawCode: row[propertyNames[2]],
           });
         });
       };

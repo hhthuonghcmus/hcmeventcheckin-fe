@@ -118,6 +118,10 @@ export class EventService {
       );
   }
 
+  getAlphabeticalTextOfAnswerIndex(answerIndex: number) {
+    return String.fromCharCode(65 + answerIndex);
+  }
+
   // openVote(topicId: string) {
   //   return this.httpClient.get<ApiReponse>(
   //     API_BASE_URL + `event/open-vote/${topicId}`
