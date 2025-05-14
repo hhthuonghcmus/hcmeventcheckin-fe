@@ -1,1 +1,47 @@
-<p>manage-event-voting-statistic works!</p>
+<div class="d-grid gap-3">
+  <div class="d-flex flex-column gap-2">
+    <div
+      class="card p-3"
+      *ngFor="let question of event.topic.questions; let i = index"
+    >
+      <div class="row d-flex align-items-center justify-content-between gap-2">
+        <div>
+          <span class="fw-bold">Question {{ i + 1 }}</span>
+          <span class="col-12 col-md-7 col-lg-8"> : {{ question.text }} </span>
+        </div>
+
+        <div class="col-12">
+          <div class="d-flex flex-column gap-1">
+            <ng-container
+              *ngFor="let answer of question.answers; let j = index"
+            >
+              <div class="d-flex align-items-center gap-2">
+                <label
+                  >({{ getTotalVotes(answer.id) }})
+                  {{ eventService.getAlphabeticalTextOfAnswerIndex(j) }}.
+                  {{ answer.text }}</label
+                >
+              </div>
+            </ng-container>
+
+            <div
+              class="d-flex justify-content-center w-100"
+              *ngIf="getCharData(question.id) as chartData"
+            >
+              <div class="col-6 col-md-3">
+                <canvas
+                  baseChart
+                  [type]="'pie'"
+                  [datasets]="chartData.datasets"
+                  [labels]="chartData.labels"
+                  (legend)="(true)"
+                >
+                </canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

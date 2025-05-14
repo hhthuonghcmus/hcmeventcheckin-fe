@@ -17,6 +17,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeng/themes/aura';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -36,5 +37,6 @@ export const appConfig: ApplicationConfig = {
         preset: Aura,
       },
     }),
+    provideCharts(withDefaultRegisterables())
   ],
 };

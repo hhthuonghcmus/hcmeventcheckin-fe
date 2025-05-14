@@ -1,13 +1,6 @@
 import { Component } from '@angular/core';
-import {
-  ActivatedRoute,
-  Router,
-  RouterLink,
-  RouterModule,
-  RouterOutlet,
-} from '@angular/router';
+import { ActivatedRoute, RouterModule, RouterOutlet } from '@angular/router';
 import { MenuItem } from 'primeng/api';
-import { Button } from 'primeng/button';
 import { Menu } from 'primeng/menu';
 import { EventService } from '../../../../services/event.service';
 import { ApiResponse } from '../../../../interfaces/api-response.interface';
@@ -62,7 +55,9 @@ export class ManageEventComponent {
           },
         ];
       },
-      error: (error) => {},
+      error: (error) => {
+
+      },
     });
   }
 }
