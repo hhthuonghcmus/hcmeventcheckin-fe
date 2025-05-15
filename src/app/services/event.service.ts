@@ -14,7 +14,7 @@ export class EventService {
   apiUrl = API_BASE_URL + 'event';
   currentEvent: Event;
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient) {}
 
   getMyEvents() {
     return this.httpClient.get<ApiResponse>(
@@ -31,7 +31,6 @@ export class EventService {
   }
 
   update(eventId: string, event: Event) {
-    console.log(event);
     return this.httpClient.post<ApiResponse>(
       `${this.apiUrl}/update/${eventId}`,
       event
@@ -46,17 +45,24 @@ export class EventService {
   }
 
   checkinPrivateEvent(data: any) {
-    return this.httpClient.post<ApiResponse>(`${this.apiUrl}/checkin-private-event`, data)
+    return this.httpClient.post<ApiResponse>(
+      `${this.apiUrl}/checkin-private-event`,
+      data
+    );
   }
 
   participateEvent(data: any) {
-    return this.httpClient.post<ApiResponse>(`${this.apiUrl}/participate-event`, data)
+    return this.httpClient.post<ApiResponse>(
+      `${this.apiUrl}/participate-event`,
+      data
+    );
   }
 
   getParticipatedEvent(phoneNumber: string) {
-    return this.httpClient.get<ApiResponse>(`${this.apiUrl}/get-participated-event/${phoneNumber}`)
+    return this.httpClient.get<ApiResponse>(
+      `${this.apiUrl}/get-participated-event/${phoneNumber}`
+    );
   }
-
 
   setCurrentEvent(event: Event) {
     this.currentEvent = event;
@@ -70,8 +76,8 @@ export class EventService {
     const data = {
       eventId,
       phoneNumber,
-      questionIds_answerIds
-    }
+      questionIds_answerIds,
+    };
     return this.httpClient.post<ApiResponse>(
       API_BASE_URL + `event/submit-vote`,
       data
@@ -80,8 +86,9 @@ export class EventService {
 
   hasVoted(eventId: string, phoneNumber: string) {
     const data = {
-      eventId, phoneNumber
-    }
+      eventId,
+      phoneNumber,
+    };
     return this.httpClient
       .post<ApiResponse>(API_BASE_URL + `event/has-voted`, data)
       .pipe(
@@ -94,8 +101,9 @@ export class EventService {
 
   getVotesByPhoneNumber(eventId: string, phoneNumber: string) {
     const data = {
-      eventId, phoneNumber
-    }
+      eventId,
+      phoneNumber,
+    };
     return this.httpClient
       .post<ApiResponse>(API_BASE_URL + `event/get-votes`, data)
       .pipe(

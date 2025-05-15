@@ -1,42 +1,26 @@
 <p-menubar [model]="navbarMenuItems">
   <ng-template #appMenuItem let-appMenuItem>
-    <p-button
-      class="flex items-center p-menu-item-link"
-      [routerLink]="['{{appMenuItem.routerLink}}']"
-    >
+    <p-button class="flex items-center p-menu-item-link" [routerLink]="['{{appMenuItem.routerLink}}']">
       <span [class]="appMenuItem.icon"></span>
       <span class="ms-2">{{ appMenuItem.label }}</span>
     </p-button>
   </ng-template>
 
   <div *ngIf="!(loggedInUser$ | async)">
-    <p-button
-      class="me-2"
-      label="Sign Up"
-      [routerLink]="['/sign-up']"
-    ></p-button>
+    <p-button class="me-2" label="Sign Up" [routerLink]="['/sign-up']"></p-button>
     <p-button label="Log In" [routerLink]="['/log-in']"></p-button>
   </div>
 
   <div *ngIf="loggedInUser$ | async as loggedInUser">
-    <p-avatar
-      (click)="menu.toggle($event)"
-      [label]="loggedInUser.firstName[0]"
-      [style]="{
+    <p-avatar (click)="menu.toggle($event)" [label]="loggedInUser.firstName[0]" [style]="{
         'background-color': '#ece9fc',
         color: 'bkack',
         height: '40px',
         width: '40px'
-      }"
-      shape="circle"
-    />
+      }" shape="circle" />
     <p-menu #menu [model]="userMenuItems" [popup]="true" [style]="{ right: 0 }">
       <ng-template #userMenuItem let-userMenuItem>
-        <a
-          pRipple
-          class="flex items-center p-menu-item-link"
-          [routerLink]="userMenuItem.routerLink"
-        >
+        <a pRipple class="flex items-center p-menu-item-link" [routerLink]="userMenuItem.routerLink">
           <span [class]="userMenuItem.icon"></span>
           <span class="ml-2">{{ userMenuItem.label }}</span>
         </a>
@@ -45,99 +29,71 @@
   </div>
 
   <div class="position-relative w-auto">
-    <p-dialog
-      [(visible)]="isQRCodeScannerDialogVisible"
-      [modal]="true"
-      [styleClass]="'w-75'"
-      [style]="{ 'max-width': '300px' }"
-      [dismissableMask]="true"
-      [resizable]="false"
-    >
-      <ngx-scanner-qrcode
-        #action="scanner"
-        [isBeep]="false"
-        (event)="scanPrivateEventQrCode($event)"
-      ></ngx-scanner-qrcode>
+    <p-dialog [(visible)]="isQRCodeScannerDialogVisible" [modal]="true" [styleClass]="'w-75'"
+      [style]="{ 'max-width': '300px' }" [dismissableMask]="true" [resizable]="false">
+      <ngx-scanner-qrcode #action="scanner" [isBeep]="false"
+        (event)="scanPrivateEventQrCode($event)"></ngx-scanner-qrcode>
       <p *ngIf="action.isLoading">⌛ Loading...</p>
-      <p-button
-        [label]="action.isStart ? 'Stop' : 'Start'"
-        (click)="action.isStart ? action.stop() : action.start()"
-      ></p-button>
+      <p-button [label]="action.isStart ? 'Stop' : 'Start'"
+        (click)="action.isStart ? action.stop() : action.start()"></p-button>
     </p-dialog>
   </div>
 
   <div class="position-relative w-auto">
-    <form
-      [formGroup]="participateEventForm"
-      (ngSubmit)="participateEvent()"
-    >
-      <p-dialog
-        [(visible)]="isEventPINDialogVisible"
-        [modal]="true"
-        [styleClass]="'w-75'"
-        [style]="{ 'max-width': '300px' }"
-        [dismissableMask]="true"
-        [resizable]="false"
-      >
+    <form [formGroup]="participateEventForm" (ngSubmit)="participateEvent()">
+      <p-dialog [(visible)]="isEventPINDialogVisible" [modal]="true" [styleClass]="'w-75'"
+        [style]="{ 'max-width': '300px' }" [dismissableMask]="true" [resizable]="false">
         <div class="d-flex flex-column gap-2">
           <p-floatlabel variant="on">
-            <input pInputText formControlName="pin" class="w-100" />
+            <input pInputText formControlName="pin" title="PIN" class="w-100" />
             <label for="pin">PIN</label>
           </p-floatlabel>
+
           <div class="text-danger">
-            <small
-              *ngIf="
-                participateEventForm.get('pin')?.hasError('required')
-              "
-            >
-              (required)</small
-            >
-            <small
-              *ngIf="
+            <small *ngIf="participateEventForm.get('pin')?.hasError('required')">
+              (Required)
+            </small>
+            <small *ngIf="
                 participateEventForm.get('pin')?.hasError('minlength') ||
                 participateEventForm.get('pin')?.hasError('maxlength') ||
-                participateEventForm.get('pin')?.hasError('pattern')
-              "
-              >(6 digits)</small
-            >
+                participateEventForm.get('pin')?.hasError('pattern')">
+              (6 digits)
+            </small>
           </div>
 
           <p-floatlabel variant="on">
-            <input
-              pInputText
-              formControlName="phoneNumber"
-              required
-              class="w-100"
-            />
-            <label for="phoneNumber"> Phone number </label>
+            <input pInputText formControlName="phoneNumber" title="Phone Number" class="w-100" />
+            <label for="phoneNumber"> Phone Number </label>
           </p-floatlabel>
 
           <div class="text-danger">
-            <small
-              *ngIf="
-                participateEventForm
-                  .get('phoneNumber')
-                  ?.hasError('required')
-              "
-            >
-              (required)</small
-            >
-            <small
-              *ngIf="
-                participateEventForm
-                  .get('phoneNumber')
-                  ?.hasError('pattern')
-              "
-              >(10-11 digits)</small
-            >
+            <small *ngIf="participateEventForm.get('phoneNumber')?.hasError('required')">
+              (Required)
+            </small>
+            <small *ngIf="participateEventForm.get('phoneNumber')?.hasError('pattern')">
+              (10-11 digits)
+            </small>
           </div>
 
-          <button
-            pButton
-            type="submit"
-            label="Go"
-            [disabled]="participateEventForm.invalid"
-          ></button>
+          <p-floatlabel variant="on">
+            <input pInputText formControlName="fullName" title="Full Name" class="w-100" />
+            <label for="phoneNumber"> Full Name </label>
+          </p-floatlabel>
+
+          <div class="text-danger">
+            <small *ngIf="participateEventForm.get('fullName')?.hasError('required')">
+              (Required)
+            </small>
+            <small *ngIf="participateEventForm.get('fullName')?.hasError('maxlength')">
+              (Name too long)
+            </small>
+            <small *ngIf="participateEventForm.get('fullName')?.hasError('pattern')">
+              (Invalid name)
+            </small>
+          </div>
+
+          <button title="Submit Button" pButton type="submit" label="Go"
+            [disabled]="participateEventForm.invalid"></button>
         </div>
       </p-dialog>
     </form>

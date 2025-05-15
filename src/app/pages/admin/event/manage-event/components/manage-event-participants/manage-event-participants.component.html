@@ -1,31 +1,32 @@
-<p-table [value]="participants">
-    <ng-template #header>
-      <tr>
-        <th>#</th>
-        <th>Name</th>
-        <th>Phone number</th>
-        <th class="text-center">QR Code</th>
-        <th class="text-center">Showed up</th>
-      </tr>
-    </ng-template>
-    <ng-template #body let-participant>
-      <tr>
-        <td>{{ participants?.indexOf(participant) + 1 }}</td>
-        <td>{{ participant.name }}</td>
-        <td>{{ participant.phoneNumber }}</td>
-        <td class="text-center">
-          <p-button icon="pi pi-qrcode" [rounded]="true" (onClick)="showQrCode(participant.phoneNumber)">
-          </p-button>
-        </td>
-        <td class="text-center">
-          <p-button *ngIf="participant.checkedIn" icon="pi pi-check" [rounded]="true" />
-          <p-button *ngIf="!participant.checkedIn" icon="pi pi-times" [rounded]="true" severity="danger" />
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
+<p-table [value]="participants" [paginator]="true" [rows]="50" [rowsPerPageOptions]="[50,100,500,1000]"
+  [responsiveLayout]="'scroll'">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>#</th>
+      <th>Name</th>
+      <th>Phone number</th>
+      <th class="text-center">QR Code</th>
+      <th class="text-center">Showed up</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-participant let-rowIndex="rowIndex">
+    <tr>
+      <td>{{ rowIndex + 1 }}</td>
+      <td>{{ participant.name }}</td>
+      <td>{{ participant.phoneNumber }}</td>
+      <td class="text-center">
+        <p-button icon="pi pi-qrcode" [rounded]="true" (onClick)="showQrCode(participant.phoneNumber)">
+        </p-button>
+      </td>
+      <td class="text-center">
+        <p-button *ngIf="participant.checkedIn" icon="pi pi-check" [rounded]="true" />
+        <p-button *ngIf="!participant.checkedIn" icon="pi pi-times" [rounded]="true" severity="danger" />
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
 
-  <p-dialog [(visible)]="isQrCodeDialogVisible" [modal]="true" [draggable]="false" [resizable]="false"
+<p-dialog [(visible)]="isQrCodeDialogVisible" [modal]="true" [draggable]="false" [resizable]="false"
   [dismissableMask]="true" [style]="{width: '90vw', maxWidth: '300px'}"
   [breakpoints]="{'960px': '75vw', '640px': '90vw'}" header="QR Code">
   <div class="d-flex justify-content-center">

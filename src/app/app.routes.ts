@@ -13,11 +13,13 @@ import { ManageEventDetailsComponent } from './pages/admin/event/manage-event/co
 import { ManageEventParticipantsComponent } from './pages/admin/event/manage-event/components/manage-event-participants/manage-event-participants.component';
 import { ManageEventLuckyDrawComponent } from './pages/admin/event/manage-event/components/manage-event-lucky-draw/manage-event-lucky-draw.component';
 import { ManageEventVotingStatisticComponent } from './pages/admin/event/manage-event/components/manage-event-voting-statistic/manage-event-voting-statistic.component';
+import { VotingComponent } from './pages/voting/voting.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'sign-up', component: SignUpComponent },
   { path: 'log-in', component: LogInComponent },
+  { path: 'voting', component: VotingComponent },
   {
     path: 'topic',
     children: [
@@ -33,13 +35,18 @@ export const routes: Routes = [
       { path: 'create', component: CreateEventComponent },
       { path: 'edit/:id', component: EditEventComponent },
       {
-        path: 'manage/:id', component: ManageEventComponent, children: [
+        path: 'manage/:id',
+        component: ManageEventComponent,
+        children: [
           { path: 'details', component: ManageEventDetailsComponent },
           { path: 'participants', component: ManageEventParticipantsComponent },
           { path: 'lucky-draw', component: ManageEventLuckyDrawComponent },
-          { path: 'voting-statistic', component: ManageEventVotingStatisticComponent },
-        ]
-      }
+          {
+            path: 'voting-statistic',
+            component: ManageEventVotingStatisticComponent,
+          },
+        ],
+      },
     ],
   },
 ];

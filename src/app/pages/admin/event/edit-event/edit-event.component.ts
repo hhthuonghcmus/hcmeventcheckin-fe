@@ -67,7 +67,6 @@ export class EditEventComponent {
 
   ngOnInit() {
     this.eventId = this.activatedRoute.snapshot.paramMap.get('id')!;
-    console.log(this.eventId);
     this.myTopics$ = this.topicService.getMyTopics().pipe(
       map((response: ApiResponse) => {
         const myTopics = response.data as Topic[];
@@ -93,7 +92,6 @@ export class EditEventComponent {
     this.eventService.getById(this.eventId).subscribe({
       next: (response: ApiResponse) => {
         const event = response.data as Event;
-        console.log(event);
         this.eventForm.patchValue({
           name: event.name,
           isPrivate: event.isPrivate,
@@ -108,7 +106,6 @@ export class EditEventComponent {
           votingEndTime: new Date(event.votingEndTime),
           topicId: event.topicId,
         });
-        console.log(this.eventForm.value);
       },
       error: (error) => {
         this.messageService.add({

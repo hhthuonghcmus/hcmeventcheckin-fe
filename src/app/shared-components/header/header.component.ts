@@ -11,13 +11,26 @@ import { Observable } from 'rxjs';
 import { UserService } from '../../services/user.service';
 import { User } from '../../interfaces/user.interface';
 import { ApiResponse } from '../../interfaces/api-response.interface';
-import { NgxScannerQrcodeComponent, ScannerQRCodeResult } from 'ngx-scanner-qrcode';
+import {
+  NgxScannerQrcodeComponent,
+  ScannerQRCodeResult,
+} from 'ngx-scanner-qrcode';
 import { EventService } from '../../services/event.service';
 import { FloatLabel } from 'primeng/floatlabel';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { InputText } from 'primeng/inputtext';
 import { CookieService } from 'ngx-cookie-service';
-import { USER_PARTICIPATED_EVENT_PIN, USER_PHONE_NUMBER } from '../../constants/cookie.constant';
+import {
+  USER_FULL_NAME,
+  USER_PARTICIPATED_EVENT_PIN,
+  USER_PHONE_NUMBER,
+} from '../../constants/cookie.constant';
 
 @Component({
   selector: 'app-header',
@@ -33,7 +46,7 @@ import { USER_PARTICIPATED_EVENT_PIN, USER_PHONE_NUMBER } from '../../constants/
     NgxScannerQrcodeComponent,
     FormsModule,
     ButtonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
@@ -51,7 +64,14 @@ export class HeaderComponent {
   publicEventPhoneNumber: string;
   participateEventForm: FormGroup;
 
-  constructor(private cookieService: CookieService, private userService: UserService, private eventService: EventService, private messageService: MessageService, private router: Router, private formBuilder: FormBuilder) {
+  constructor(
+    private cookieService: CookieService,
+    private userService: UserService,
+    private eventService: EventService,
+    private messageService: MessageService,
+    private router: Router,
+    private formBuilder: FormBuilder
+  ) {
     this.loggedInUser$ = this.userService.loggedInUser$.asObservable();
 
     this.userMenuItems = [
@@ -95,7 +115,7 @@ export class HeaderComponent {
           },
           {
             label: 'My Topics',
-            icon: 'pi pi-list',
+            icon: 'pi pi-check-square',
             routerLink: 'topic/my-topics',
           },
         ];
@@ -117,14 +137,39 @@ export class HeaderComponent {
             command: () => this.signOut(),
           },
         ];
+      } else {
+        this.navbarMenuItems = [
+          ...this.navbarMenuItems,
+          {
+            label: 'Voting',
+            icon: 'pi pi-pen-to-square',
+            routerLink: 'voting',
+          },
+        ];
       }
     });
 
     this.participateEventForm = this.formBuilder.group({
-      pin: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6), Validators.pattern(/^\d+$/)]],
+      pin: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(6),
+          Validators.maxLength(6),
+          Validators.pattern(/^\d+$/),
+        ],
+      ],
       phoneNumber: [
         '',
         [Validators.required, Validators.pattern(/^\d{10,11}$/)],
+      ],
+      fullName: [
+        '',
+        [
+          Validators.required,
+          Validators.maxLength(100),
+          Validators.pattern(/^[a-zA-ZÀ-ỹ\s\-']+$/),
+        ],
       ],
     });
   }
@@ -156,67 +201,20 @@ export class HeaderComponent {
       this.isScanQrInCooldown = false;
     }, this.scanQrCooldownTime);
 
-    this.eventService.checkinPrivateEvent(JSON.parse(qrCodeResult[0].value)).subscribe({
-      next: (response: ApiResponse) => {
-        if (response.statusCode === 200) {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Check in',
-            detail: 'Successful',
-          });
-        } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: response.message,
-          });
-        }
-      },
-      error: (error) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: "Qr Code is not valid",
-        });
-      },
-    });
-  }
-
-  showParticipateEventPINDialog() {
-    this.isEventPINDialogVisible = true;
-  }
-
-  participateEvent() {
-    console.log(this.participateEventForm.value)
-    if (this.participateEventForm.valid) {
-      this.eventService.participateEvent(this.participateEventForm.value).subscribe({
-        next: (response) => {
-          if (response['statusCode'] === 200) {
+    this.eventService
+      .checkinPrivateEvent(JSON.parse(qrCodeResult[0].value))
+      .subscribe({
+        next: (response: ApiResponse) => {
+          if (response.statusCode === 200) {
             this.messageService.add({
               severity: 'success',
-              summary: 'Participate event',
+              summary: 'Check in',
               detail: 'Successful',
             });
-
-            const expiresDate = new Date();
-            expiresDate.setDate(expiresDate.getDate() + 1);
-            this.cookieService.set(
-              USER_PHONE_NUMBER,
-              this.participateEventForm.value["phoneNumber"],
-              expiresDate
-            );
-            this.cookieService.set(
-              USER_PARTICIPATED_EVENT_PIN,
-              this.participateEventForm.value["pin"],
-              expiresDate
-            );
-
-            this.isEventPINDialogVisible = false;
-            this.router.navigate(["/"])
           } else {
             this.messageService.add({
               severity: 'error',
-              summary: 'Participate event',
+              summary: 'Error',
               detail: response.message,
             });
           }
@@ -224,12 +222,67 @@ export class HeaderComponent {
         error: (error) => {
           this.messageService.add({
             severity: 'error',
-            summary: 'Participate event',
-            detail: error,
+            summary: 'Error',
+            detail: 'Qr Code is not valid',
           });
         },
-        complete: () => { },
       });
+  }
+
+  showParticipateEventPINDialog() {
+    this.isEventPINDialogVisible = true;
+  }
+
+  participateEvent() {
+    if (this.participateEventForm.valid) {
+      this.eventService
+        .participateEvent(this.participateEventForm.value)
+        .subscribe({
+          next: (response) => {
+            if (response['statusCode'] === 200) {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Participate event',
+                detail: 'Successful',
+              });
+
+              const expiresDate = new Date();
+              expiresDate.setDate(expiresDate.getDate() + 1);
+              this.cookieService.set(
+                USER_PARTICIPATED_EVENT_PIN,
+                this.participateEventForm.value['pin'],
+                expiresDate
+              );
+              this.cookieService.set(
+                USER_PHONE_NUMBER,
+                this.participateEventForm.value['phoneNumber'],
+                expiresDate
+              );
+              this.cookieService.set(
+                USER_FULL_NAME,
+                this.participateEventForm.value['fullName'],
+                expiresDate
+              );
+
+              this.isEventPINDialogVisible = false;
+              this.router.navigate(['/']);
+            } else {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Participate event',
+                detail: response.message,
+              });
+            }
+          },
+          error: (error) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Participate event',
+              detail: error,
+            });
+          },
+          complete: () => {},
+        });
     } else {
       this.messageService.add({
         severity: 'error',
@@ -237,6 +290,5 @@ export class HeaderComponent {
         detail: 'Error',
       });
     }
-
   }
 }

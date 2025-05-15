@@ -7,29 +7,16 @@
             <h1>{{ cyclingName }}</h1>
           </div>
         </div>
-        <div
-          class="text-center winner-animation"
-          *ngIf="!isSpinning && currentWinner"
-        >
+        <div class="text-center winner-animation" *ngIf="!isSpinning && currentWinner">
           <h3><i class="pi pi-gift" style="font-size: larger"></i> Winner!</h3>
           <h1>{{ currentWinner.name }}</h1>
           <h4>{{ currentWinner.phoneNumber }}</h4>
         </div>
         <div class="d-flex justify-content-center gap-3">
-          <p-button
-            label="Draw"
-            icon="pi pi-gift"
-            (onClick)="startLuckyDraw()"
-            [disabled]="isSpinning"
-          >
+          <p-button label="Draw" icon="pi pi-gift" (onClick)="startLuckyDraw()" [disabled]="isSpinning">
           </p-button>
-          <p-button
-            label="Reset"
-            icon="pi pi-refresh"
-            severity="secondary"
-            (onClick)="resetLuckyDraw()"
-            [disabled]="isSpinning || winners.length === 0"
-          >
+          <p-button label="Reset" icon="pi pi-refresh" severity="secondary" (onClick)="resetLuckyDraw()"
+            [disabled]="isSpinning || winners.length === 0">
           </p-button>
         </div>
       </div>
