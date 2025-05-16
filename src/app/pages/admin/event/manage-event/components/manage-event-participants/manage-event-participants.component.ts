@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
   selector: 'app-manage-event-participants',
   imports: [TableModule, ButtonModule, Dialog, CommonModule],
   templateUrl: './manage-event-participants.component.html',
-  styleUrl: './manage-event-participants.component.scss'
+  styleUrl: './manage-event-participants.component.scss',
 })
 export class ManageEventParticipantsComponent {
   event: Event;
@@ -22,10 +22,14 @@ export class ManageEventParticipantsComponent {
   isQrCodeDialogVisible = false;
   qrCodeImageLink: string | null = null;
 
-  constructor(private eventService: EventService, private router: Router, private messageService: MessageService) {
+  constructor(
+    private eventService: EventService,
+    private router: Router,
+    private messageService: MessageService
+  ) {
     this.event = this.eventService.getCurrentEvent();
     if (!this.event) {
-      this.router.navigate(['event/my-events'])
+      this.router.navigate(['event/my-events']);
     }
   }
 
@@ -69,6 +73,4 @@ export class ManageEventParticipantsComponent {
       },
     });
   }
-
-
 }

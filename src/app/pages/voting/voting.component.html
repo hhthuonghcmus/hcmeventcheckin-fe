@@ -1,0 +1,101 @@
+<div class="container pt-3">
+    <div class="card border-rounded p-3">
+        <div *ngIf="event === null">No event opened for voting</div>
+
+        <div *ngIf="event !== null">
+            <ng-container *ngIf="!(hasVoted$ | async)">
+                <span>Submit vote for {{ event?.name }}</span>
+            </ng-container>
+
+            <ng-container *ngIf="hasVoted$ | async">
+                <span> Already voted for {{ event?.name }}</span>
+                <small class="text-danger"> <i> (See below)</i></small>
+            </ng-container>
+        </div>
+    </div>
+
+    <form class="pt-3 d-grid gap-3" *ngIf="topicOpenedForVoting !== null && !(hasVoted$ | async)"
+        [formGroup]="topicVoteForm" (ngSubmit)="submitVote()">
+        <div class="d-flex flex-column gap-2">
+            <div class="card p-3" *ngFor="let question of topicOpenedForVoting?.questions; let i = index">
+                <div class="row d-flex align-items-center justify-content-between gap-2">
+                    <div>
+                        <span class="fw-bold">Question {{ i + 1 }}</span>
+                        <span class="col-12 col-md-7 col-lg-8">
+                            : {{ question.text }}
+                        </span>
+                        <small *ngIf="question.questionType === 'Single Choice'">
+                            (Single Choice)</small>
+                        <small *ngIf="question.questionType === 'Multiple Choice'">
+                            (Multiple Choice)</small>
+                        <small class="text-danger" *ngIf="
+                topicVoteForm.get(question.id.toString())?.hasError('required')
+              ">
+                            required</small>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="d-flex flex-column gap-1">
+                            <ng-container *ngFor="let answer of question.answers; let j = index">
+                                <div class="d-flex align-items-center gap-2">
+                                    <p-radiobutton *ngIf="question.questionType === 'Single Choice'"
+                                        [inputId]="question.id" [value]="answer.id"
+                                        [formControlName]="question.id.toString()"
+                                        styleClass="d-flex align-items-center" />
+                                    <p-checkbox *ngIf="question.questionType === 'Multiple Choice'"
+                                        [inputId]="question.id" [value]="answer.id"
+                                        [formControlName]="question.id.toString()"
+                                        styleClass="d-flex align-items-center" />
+                                    <label>{{ answer.text }}</label>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-end">
+            <button pButton pRipple severity="success" type="submit" class="w-auto" [disabled]="!topicVoteForm.valid">
+                Submit
+            </button>
+        </div>
+    </form>
+
+    <div class="pt-3 d-grid gap-3" *ngIf="topicOpenedForVoting !== null && (hasVoted$ | async)">
+        <div class="d-flex flex-column gap-2">
+            <div class="card p-3" *ngFor="let question of topicOpenedForVoting?.questions; let i = index">
+                <div class="row d-flex align-items-center justify-content-between gap-2">
+                    <div>
+                        <span class="fw-bold">
+                            Question {{ i + 1 }}
+                        </span>
+                        <span class="col-12 col-md-7 col-lg-8">
+                            : {{ question.text }}
+                        </span>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="d-flex flex-column gap-1">
+                            <ng-container *ngFor="let answer of question.answers; let j = index">
+                                <div class="d-flex align-items-center gap-2">
+                                    <p-radiobutton *ngIf="question.questionType === 'Single Choice'"
+                                        styleClass="d-flex align-items-center" aria-checked="true"
+                                        [ngModel]="isAnswerSelected(question.id, answer.id)" [binary]="true"
+                                        [disabled]="true" />
+                                    <p-checkbox *ngIf="question.questionType === 'Multiple Choice'"
+                                        styleClass="d-flex align-items-center"
+                                        [ngModel]="isAnswerSelected(question.id, answer.id)" [binary]="true"
+                                        [disabled]="true" />
+                                    <label [ngClass]="{'text-success': isAnswerSelected(question.id, answer.id)}">
+                                        {{ answer.text }}
+                                    </label>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

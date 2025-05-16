@@ -100,7 +100,6 @@ export class CreateTopicComponent {
   }
 
   createTopic() {
-    console.log(this.topicForm.invalid);
     if (this.topicForm.invalid) {
       this.messageService.add({
         severity: 'error',

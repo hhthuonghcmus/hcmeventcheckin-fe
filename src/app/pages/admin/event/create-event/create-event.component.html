@@ -1,66 +1,38 @@
 <form class="container pt-3 d-grid gap-3" [formGroup]="eventForm">
   <div class="card p-3">
     <p-floatlabel variant="in">
-      <input pInputText formControlName="name" pSize="large" class="w-100" />
-      <label for="name"
-        >Event name
-        <small
-          class="text-danger"
-          *ngIf="eventForm.get('name')?.hasError('required')"
-        >
-          (required)</small
-        ></label
-      >
+      <input pInputText formControlName="name" pSize="large" class="w-100" title="Event name" />
+      <label for="name">Event name
+        <small class="text-danger" *ngIf="eventForm.get('name')?.hasError('required')">
+          (required)</small></label>
     </p-floatlabel>
   </div>
 
   <div class="card p-3 d-flex gap-2">
-    <div class="row d-flex align-items-center justify-content-between gap-2">
-      <div class="col-12 col-sm-5 col-md-4">
+    <div class="row d-flex align-items-center justify-content-between">
+      <div class="col-12 col-md-4 mb-2">
         <p-floatlabel variant="in">
-          <p-datepicker
-            formControlName="startTime"
-            showIcon
-            iconDisplay="input"
-            [showTime]="true"
-            [hourFormat]="'24'"
-            dateFormat="dd-M-yy"
-            pSize="small"
-            class="d-inline-grid w-100"
-          />
-          <label for="startTime"
-            >Start
-            <small
-              class="text-danger"
-              *ngIf="eventForm.get('startTime')?.hasError('required')"
-            >
+          <p-datepicker formControlName="startTime" showIcon iconDisplay="input" [showTime]="true" [hourFormat]="'24'"
+            dateFormat="dd-M-yy" pSize="small" class="d-inline-grid w-100" />
+          <label for="startTime">Start
+            <small class="text-danger" *ngIf="eventForm.get('startTime')?.hasError('required')">
               (required)
-            </small></label
-          >
+            </small></label>
         </p-floatlabel>
       </div>
 
-      <div class="col-12">
+      <div class="col-12 col-md-8 mb-2">
         <p-floatlabel variant="in">
-          <input
-            pInputText
-            formControlName="location"
-            pSize="small"
-            class="w-100"
-          />
+          <input pInputText formControlName="location" pSize="small" class="w-100"
+            style="font-size: medium; padding-bottom: 8px;" title="Event location" />
           <label for="location">Location</label>
         </p-floatlabel>
       </div>
 
       <div class="col-12">
         <p-floatlabel variant="in">
-          <textarea
-            pTextarea
-            formControlName="description"
-            rows="5"
-            pSize="small"
-            class="w-100"
-          ></textarea>
+          <textarea pTextarea formControlName="description" rows="5" pSize="small" class="w-100"
+            title="Event description"></textarea>
           <label for="description">Description</label>
         </p-floatlabel>
       </div>
@@ -78,25 +50,19 @@
             </div>
           </div>
         </div>
-  
+
         <div class="mt-2 mt-md-0 w-100 d-flex justify-content-start" *ngIf="eventForm.get('isPrivate').value">
-          <p-fileupload
-            chooseLabel="Participants.xlsx"
-            maxFileSize="1000000"
-            accept=".xlsx"
-            mode="basic"
-            (onSelect)="selectParticipantsXlsxFile($event)"
-          >
+          <p-fileupload chooseLabel="Participants.xlsx" maxFileSize="1000000" accept=".xlsx" mode="basic"
+            (onSelect)="selectParticipantsXlsxFile($event)">
           </p-fileupload>
         </div>
       </div>
 
-      <div
-        class="col-12"
-        *ngIf="eventForm.get('isPrivate').value"
-      >
-        <div>Participants: {{ participants.value.length }} 
-            <p-togglebutton *ngIf="participants.value.length > 0" formControlName="isParticipantTableVisible" onLabel="Hide" offLabel="Show" onIcon="pi pi-eye-slash" offIcon="pi pi-eye"/>
+      <div class="d-flex flex-column gap-2 justify-content-between mt-2" *ngIf="eventForm.get('isPrivate').value">
+        <div class="d-flex gap-3 align-items-center">
+          Participants: {{ participants.value.length }}
+          <p-togglebutton *ngIf=" participants.value.length> 0" formControlName="isParticipantTableVisible"
+            onLabel="Hide" offLabel="Show" onIcon="pi pi-eye-slash" offIcon="pi pi-eye" />
         </div>
         <p-table [value]="participants.value" *ngIf="eventForm.get('isParticipantTableVisible').value">
           <ng-template #header>
@@ -121,125 +87,63 @@
   </div>
 
   <div class="card p-3 d-flex gap-2">
-    <div class="row d-flex align-items-center gap-1">
+    <div class="row d-flex align-items-center">
       <span class="text-secondary">Lucky draw</span>
 
-      <div class="col-12 col-sm-5 col-md-4">
+      <div class="col-sm-12 col-md-4 mt-2">
         <p-floatlabel variant="in">
-          <p-datepicker
-            formControlName="luckyDrawStartTime"
-            showIcon
-            iconDisplay="input"
-            [showTime]="true"
-            [hourFormat]="'24'"
-            dateFormat="dd-M-yy"
-            pSize="small"
-            class="d-inline-grid w-100"
-          />
-          <label for="luckyDrawStartTime"
-            >Start
-            <small
-              class="text-danger"
-              *ngIf="eventForm.get('luckyDrawStartTime')?.hasError('required')"
-            >
+          <p-datepicker formControlName="luckyDrawStartTime" showIcon iconDisplay="input" [showTime]="true"
+            [hourFormat]="'24'" dateFormat="dd-M-yy" pSize="small" class="d-inline-grid w-100" />
+          <label for="luckyDrawStartTime">Start
+            <small class="text-danger" *ngIf="eventForm.get('luckyDrawStartTime')?.hasError('required')">
               (required)
-            </small></label
-          >
+            </small></label>
         </p-floatlabel>
       </div>
 
-      <div class="col-12 col-sm-5 col-md-4">
+      <div class="col-sm-12 col-md-4 mt-2">
         <p-floatlabel variant="in">
-          <p-datepicker
-            formControlName="luckyDrawEndTime"
-            showIcon
-            iconDisplay="input"
-            [showTime]="true"
-            [hourFormat]="'24'"
-            dateFormat="dd-M-yy"
-            pSize="small"
-            class="d-inline-grid w-100"
-          />
-          <label for="luckyDrawEndTime"
-            >End
-            <small
-              class="text-danger"
-              *ngIf="eventForm.get('luckyDrawEndTime')?.hasError('required')"
-            >
+          <p-datepicker formControlName="luckyDrawEndTime" showIcon iconDisplay="input" [showTime]="true"
+            [hourFormat]="'24'" dateFormat="dd-M-yy" pSize="small" class="d-inline-grid w-100" />
+          <label for="luckyDrawEndTime">End
+            <small class="text-danger" *ngIf="eventForm.get('luckyDrawEndTime')?.hasError('required')">
               (required)
-            </small></label
-          >
+            </small></label>
         </p-floatlabel>
       </div>
     </div>
 
-    <div class="row d-flex align-items-center gap-1">
+    <div class="row d-flex align-items-center">
       <span class="text-secondary">Voting</span>
 
-      <div class="col-12 col-sm-5 col-md-4">
+      <div class="col-sm-12 col-md-4 mt-2">
         <p-floatlabel variant="in">
-          <p-datepicker
-            formControlName="votingStartTime"
-            showIcon
-            iconDisplay="input"
-            [showTime]="true"
-            [hourFormat]="'24'"
-            dateFormat="dd-M-yy"
-            pSize="small"
-            class="d-inline-grid w-100"
-          />
-          <label for="votingStartTime"
-            >Start
-            <small
-              class="text-danger"
-              *ngIf="eventForm.get('votingStartTime')?.hasError('required')"
-            >
+          <p-datepicker formControlName="votingStartTime" showIcon iconDisplay="input" [showTime]="true"
+            [hourFormat]="'24'" dateFormat="dd-M-yy" pSize="small" class="d-inline-grid w-100" />
+          <label for="votingStartTime">Start
+            <small class="text-danger" *ngIf="eventForm.get('votingStartTime')?.hasError('required')">
               (required)
-            </small></label
-          >
+            </small></label>
         </p-floatlabel>
       </div>
 
-      <div class="col-12 col-sm-5 col-md-4">
+      <div class="col-sm-12 col-md-4 mt-2">
         <p-floatlabel variant="in">
-          <p-datepicker
-            formControlName="votingEndTime"
-            showIcon
-            iconDisplay="input"
-            [showTime]="true"
-            [hourFormat]="'24'"
-            dateFormat="dd-M-yy"
-            pSize="small"
-            class="d-inline-grid w-100"
-          />
-          <label for="votingEndTime"
-            >End
-            <small
-              class="text-danger"
-              *ngIf="eventForm.get('votingEndTime')?.hasError('required')"
-            >
+          <p-datepicker formControlName="votingEndTime" showIcon iconDisplay="input" [showTime]="true"
+            [hourFormat]="'24'" dateFormat="dd-M-yy" pSize="small" class="d-inline-grid w-100" />
+          <label for="votingEndTime">End
+            <small class="text-danger" *ngIf="eventForm.get('votingEndTime')?.hasError('required')">
               (required)
-            </small></label
-          >
+            </small></label>
         </p-floatlabel>
       </div>
 
-      <div class="col-12 col-sm-5 col-md-4">
+      <div class="col-sm-12 col-md-4 mt-2">
         <p-floatlabel variant="in">
-          <p-select
-            [autoDisplayFirst]="false"
-            [options]="myTopics$ | async"
-            optionLabel="name"
-            optionValue="id"
-            formControlName="topicId"
-            class="w-100"
-          />
-          <label for="topicId"
-            >Voting topic
-            <small
-              class="text-danger"
-              *ngIf="eventForm.get('topicId')?.hasError('required')"
-            >
+          <p-select [autoDisplayFirst]="false" [options]="myTopics$ | async" optionLabel="name" optionValue="id"
+            formControlName="topicId" class="w-100" />
+          <label for="topicId">Voting topic
+            <small class="text-danger" *ngIf="eventForm.get('topicId')?.hasError('required')">
               (required)
             </small>
           </label>
@@ -250,19 +154,9 @@
 
   <div class="d-flex align-items-center justify-content-end">
     <div class="d-flex align-items-center gap-2">
-      <p-button
-        icon="pi pi-file-plus"
-        severity="success"
-        label="Create event"
-        (click)="createEvent()"
-        [disabled]="eventForm.invalid"
-      />
-      <p-button
-        icon="pi pi-sign-out"
-        severity="danger"
-        label="Back"
-        [routerLink]="['/event/my-events']"
-      />
+      <p-button icon="pi pi-file-plus" severity="success" label="Create event" (click)="createEvent()"
+        [disabled]="eventForm.invalid" />
+      <p-button icon="pi pi-sign-out" severity="danger" label="Back" [routerLink]="['/event/my-events']" />
     </div>
   </div>
 </form>

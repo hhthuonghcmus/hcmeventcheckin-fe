@@ -1,8 +1,9 @@
 .container {
-    height: 94vh;
+  height: 94vh;
 }
 
 form {
-    background-color: rgba(15,23,42,.5);
-    backdrop-filter: blur(8px);
+  background-color: rgba(15, 23, 42, 0.5);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
 }

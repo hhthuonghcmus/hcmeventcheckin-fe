@@ -1,10 +1,13 @@
-<form
-  class="container pt-3 d-grid gap-3"
-  [formGroup]="topicForm"
->
+<form class="container pt-3 d-grid gap-3" [formGroup]="topicForm">
   <div class="card p-3">
     <p-floatlabel variant="in">
-      <input pInputText formControlName="name" pSize="large" class="w-100" />
+      <input
+        pInputText
+        formControlName="name"
+        pSize="large"
+        class="w-100"
+        title="The name of the topic"
+      />
       <label for="name">Topic name</label>
     </p-floatlabel>
     <small
@@ -89,6 +92,7 @@
                   formControlName="text"
                   pSize="small"
                   class="w-fill"
+                  title="Your answer"
                 />
 
                 <p-button
@@ -108,6 +112,7 @@
           </div>
 
           <button
+            type="button"
             pButton
             pRipple
             severity="success"

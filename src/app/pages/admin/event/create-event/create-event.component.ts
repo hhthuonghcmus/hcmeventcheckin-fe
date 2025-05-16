@@ -27,10 +27,7 @@ import { DatePicker } from 'primeng/datepicker';
 import { Topic } from '../../../../interfaces/topic.interface';
 import { EventService } from '../../../../services/event.service';
 import { RadioButton } from 'primeng/radiobutton';
-import {
-  FileSelectEvent,
-  FileUpload,
-} from 'primeng/fileupload';
+import { FileSelectEvent, FileUpload } from 'primeng/fileupload';
 import * as XLSX from 'xlsx';
 import { TableModule } from 'primeng/table';
 import { ToggleButton } from 'primeng/togglebutton';

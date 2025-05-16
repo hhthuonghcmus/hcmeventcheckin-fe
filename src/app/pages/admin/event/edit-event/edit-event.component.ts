@@ -24,10 +24,7 @@ import { Event } from '../../../../interfaces/event.interface';
 import { Topic } from '../../../../interfaces/topic.interface';
 import { TopicService } from '../../../../services/topic.service';
 import { RadioButton } from 'primeng/radiobutton';
-import {
-  FileSelectEvent,
-  FileUpload,
-} from 'primeng/fileupload';
+import { FileSelectEvent, FileUpload } from 'primeng/fileupload';
 import * as XLSX from 'xlsx';
 import { TableModule } from 'primeng/table';
 import { ToggleButton } from 'primeng/togglebutton';
@@ -66,11 +63,10 @@ export class EditEventComponent {
     private formBuilder: FormBuilder,
     private messageService: MessageService,
     private router: Router
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.eventId = this.activatedRoute.snapshot.paramMap.get('id')!;
-    console.log(this.eventId);
     this.myTopics$ = this.topicService.getMyTopics().pipe(
       map((response: ApiResponse) => {
         const myTopics = response.data as Topic[];
@@ -96,7 +92,6 @@ export class EditEventComponent {
     this.eventService.getById(this.eventId).subscribe({
       next: (response: ApiResponse) => {
         const event = response.data as Event;
-        console.log(event);
         this.eventForm.patchValue({
           name: event.name,
           isPrivate: event.isPrivate,
@@ -111,7 +106,6 @@ export class EditEventComponent {
           votingEndTime: new Date(event.votingEndTime),
           topicId: event.topicId,
         });
-        console.log(this.eventForm.value)
       },
       error: (error) => {
         this.messageService.add({
