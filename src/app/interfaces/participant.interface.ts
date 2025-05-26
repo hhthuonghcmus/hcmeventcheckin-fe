@@ -1,5 +1,6 @@
 export interface Participant {
-    name: string;
-    phoneNumber: string;
-    checkedIn: boolean;
+  name: string;
+  phoneNumber: string;
+  checkedIn: boolean;
+  luckyDrawCode: string;
 }

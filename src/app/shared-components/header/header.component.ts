@@ -28,6 +28,7 @@ import { InputText } from 'primeng/inputtext';
 import { CookieService } from 'ngx-cookie-service';
 import {
   USER_FULL_NAME,
+  USER_LUCKY_DRAW_CODE,
   USER_PARTICIPATED_EVENT_PIN,
   USER_PHONE_NUMBER,
 } from '../../constants/cookie.constant';
@@ -243,7 +244,7 @@ export class HeaderComponent {
               this.messageService.add({
                 severity: 'success',
                 summary: 'Participate event',
-                detail: 'Successful',
+                detail: response.message,
               });
 
               const expiresDate = new Date();
@@ -264,8 +265,17 @@ export class HeaderComponent {
                 expiresDate
               );
 
-              this.isEventPINDialogVisible = false;
+              // Get luckyDrawCode from response
+              const drawCode = response.data['luckyDrawCode'];
+              this.cookieService.set(
+                USER_LUCKY_DRAW_CODE,
+                drawCode,
+                expiresDate
+              );
+              this.userService.setLuckyDrawCode(drawCode);
               this.router.navigate(['/']);
+
+              this.isEventPINDialogVisible = false;
             } else {
               this.messageService.add({
                 severity: 'error',

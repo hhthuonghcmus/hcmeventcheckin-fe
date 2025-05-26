@@ -111,7 +111,7 @@ export class CreateEventComponent {
           this.participants.value.push({
             name: row[propertyNames[0]],
             phoneNumber: row[propertyNames[1]],
-            luckydrawCode: row[propertyNames[2]],
+            luckyDrawCode: row[propertyNames[2]],
           });
         });
       };

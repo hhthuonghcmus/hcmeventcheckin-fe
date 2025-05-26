@@ -5,7 +5,10 @@ import { User } from '../interfaces/user.interface';
 import { CookieService } from 'ngx-cookie-service';
 import { API_BASE_URL } from '../constants/api.constant';
 import { ApiResponse } from '../interfaces/api-response.interface';
-import { LOGGED_IN_USER_KEY } from '../constants/cookie.constant';
+import {
+  LOGGED_IN_USER_KEY,
+  USER_LUCKY_DRAW_CODE,
+} from '../constants/cookie.constant';
 import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
@@ -14,11 +17,15 @@ import { jwtDecode } from 'jwt-decode';
 export class UserService {
   public qrImageLink$ = new BehaviorSubject<string>('');
   public loggedInUser$ = new BehaviorSubject<User>(null);
+  private luckyDrawCodeSubject = new BehaviorSubject<string | null>(null);
+  luckyDrawCode$ = this.luckyDrawCodeSubject.asObservable();
 
   constructor(
     private httpClient: HttpClient,
     private cookieService: CookieService
-  ) {}
+  ) {
+    this.setLuckyDrawCode(this.cookieService.get(USER_LUCKY_DRAW_CODE));
+  }
 
   getRole() {
     return this.httpClient.get<ApiResponse>(API_BASE_URL + 'user/get-role');
@@ -76,5 +83,9 @@ export class UserService {
     }
 
     return role;
+  }
+
+  setLuckyDrawCode(code: string) {
+    this.luckyDrawCodeSubject.next(code);
   }
 }
