@@ -1,0 +1,9 @@
+<div *ngIf="!isLoggedIn" class="center-content">
+    <p-card styleClass="py-4 px-3 width: auto; max-width: 90vw;">
+        <div class="text-center">
+            <div class="mb-2 fs-4 text-secondary">Your lucky draw code:</div>
+            <h1 class="display-3 fw-bold text-primary">{{ luckyDrawCode }}</h1>
+            <p class="mt-3 text-secondary" *ngIf="!luckyDrawCode">No lucky draw code assigned</p>
+        </div>
+    </p-card>
+</div>

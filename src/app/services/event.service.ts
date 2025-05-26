@@ -130,6 +130,13 @@ export class EventService {
     return String.fromCharCode(65 + answerIndex);
   }
 
+  getLuckyDrawCodeByPhoneNumber(eventId: string, phoneNumber: string) {
+    return this.httpClient.get<ApiResponse>(
+      API_BASE_URL + `event/get-lucky-draw-code/${eventId}`,
+      { params: { phoneNumber } }
+    );
+  }
+
   // openVote(topicId: string) {
   //   return this.httpClient.get<ApiReponse>(
   //     API_BASE_URL + `event/open-vote/${topicId}`
