@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { MenuItem, MessageService } from 'primeng/api';
 import { Menubar } from 'primeng/menubar';
-import { Button, ButtonModule } from 'primeng/button';
+import { ButtonModule } from 'primeng/button';
 import { Avatar } from 'primeng/avatar';
 import { Menu } from 'primeng/menu';
 import { Dialog } from 'primeng/dialog';
@@ -64,6 +64,9 @@ export class HeaderComponent {
   publicEventPIN: string;
   publicEventPhoneNumber: string;
   participateEventForm: FormGroup;
+  selectedDevice: MediaDeviceInfo = null;
+  @ViewChild('scanner') scanner!: NgxScannerQrcodeComponent;
+  selectedDeviceId: string;
 
   constructor(
     private cookieService: CookieService,
@@ -175,8 +178,43 @@ export class HeaderComponent {
     });
   }
 
+  ngAfterViewInit() {
+    const role = this.userService.getLoggedInUserRole();
+    if (role === 'Admin') {
+      this.scanner.start().subscribe(x => {
+        this.scanner.devices.subscribe((scannerDevices: MediaDeviceInfo[]) => {
+          if (!scannerDevices || scannerDevices.length === 0) {
+            alert("No cameras found on this device.");
+            return;
+          }
+      
+          const preferredDevice = scannerDevices.find((d) =>
+            /back|trás|rear|traseira|environment|ambiente/gi.test(d.label)
+          ) ?? scannerDevices[0];
+      
+          if (preferredDevice) {
+            this.selectedDeviceId = preferredDevice.deviceId;
+          } else {
+            alert("No suitable camera device found.");
+          }
+        });
+      });
+    }
+  }
+
   showQrScanDialog() {
-    this.isQRCodeScannerDialogVisible = true;
+    this.scanner.playDevice(this.selectedDeviceId).subscribe({
+      next: () => {
+        setTimeout(() => {
+          this.isQRCodeScannerDialogVisible = true;
+        }, 300);
+      },
+    });
+  }
+  
+  closeQRCodeScannerDialog() {
+    this.scanner.stop();
+    this.isQRCodeScannerDialogVisible = false;
   }
 
   signOut() {
@@ -291,7 +329,7 @@ export class HeaderComponent {
               detail: error,
             });
           },
-          complete: () => {},
+          complete: () => { },
         });
     } else {
       this.messageService.add({

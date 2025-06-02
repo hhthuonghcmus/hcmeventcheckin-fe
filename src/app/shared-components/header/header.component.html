@@ -29,13 +29,11 @@
   </div>
 
   <div class="position-relative w-auto">
-    <p-dialog [(visible)]="isQRCodeScannerDialogVisible" [modal]="true" [styleClass]="'w-75'"
+    <p-dialog [(visible)]="isQRCodeScannerDialogVisible" [modal]="true" [styleClass]="'w-75'" (onHide)="closeQRCodeScannerDialog()"
       [style]="{ 'max-width': '300px' }" [dismissableMask]="true" [resizable]="false">
-      <ngx-scanner-qrcode #action="scanner" [isBeep]="false"
-        (event)="scanPrivateEventQrCode($event)"></ngx-scanner-qrcode>
-      <p *ngIf="action.isLoading">⌛ Loading...</p>
-      <p-button [label]="action.isStart ? 'Stop' : 'Start'"
-        (click)="action.isStart ? action.stop() : action.start()"></p-button>
+      <ngx-scanner-qrcode #scanner="scanner" [isBeep]="false"
+        (event)="scanPrivateEventQrCode($event)">
+      </ngx-scanner-qrcode>
     </p-dialog>
   </div>
 
