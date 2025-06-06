@@ -67,6 +67,7 @@ export class HeaderComponent {
   selectedDevice: MediaDeviceInfo = null;
   @ViewChild('scanner') scanner!: NgxScannerQrcodeComponent;
   selectedDeviceId: string;
+  isScannerStarted = false;
 
   constructor(
     private cookieService: CookieService,
@@ -178,40 +179,51 @@ export class HeaderComponent {
     });
   }
 
-  ngAfterViewInit() {
-    const role = this.userService.getLoggedInUserRole();
-    if (role === 'Admin') {
+  showQrScanDialog() {
+    if (this.isScannerStarted) {
+      this.scanner.playDevice(this.selectedDeviceId).subscribe({
+        next: () => {
+          this.isQRCodeScannerDialogVisible = true;
+        },
+      });
+    }
+    else {
       this.scanner.start().subscribe(x => {
         this.scanner.devices.subscribe((scannerDevices: MediaDeviceInfo[]) => {
           if (!scannerDevices || scannerDevices.length === 0) {
             alert("No cameras found on this device.");
             return;
           }
-      
+
           const preferredDevice = scannerDevices.find((d) =>
             /back|trás|rear|traseira|environment|ambiente/gi.test(d.label)
           ) ?? scannerDevices[0];
-      
+
           if (preferredDevice) {
-            this.selectedDeviceId = preferredDevice.deviceId;
+
+
+            setTimeout(() => {
+              this.selectedDeviceId = preferredDevice.deviceId;
+              this.scanner.playDevice(this.selectedDeviceId).subscribe({
+                next: () => {
+                  this.isScannerStarted = true;
+
+                  setTimeout(() => {
+                    this.isQRCodeScannerDialogVisible = true;
+                  }, 1000);
+                },
+              });
+            })
+
           } else {
             alert("No suitable camera device found.");
           }
         });
       });
     }
+
   }
 
-  showQrScanDialog() {
-    this.scanner.playDevice(this.selectedDeviceId).subscribe({
-      next: () => {
-        setTimeout(() => {
-          this.isQRCodeScannerDialogVisible = true;
-        }, 300);
-      },
-    });
-  }
-  
   closeQRCodeScannerDialog() {
     this.scanner.stop();
     this.isQRCodeScannerDialogVisible = false;
