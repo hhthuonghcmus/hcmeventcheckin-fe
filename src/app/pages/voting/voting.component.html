@@ -87,7 +87,7 @@
                                         styleClass="d-flex align-items-center"
                                         [ngModel]="isAnswerSelected(question.id, answer.id)" [binary]="true"
                                         [disabled]="true" />
-                                    <label [ngClass]="{'text-success': isAnswerSelected(question.id, answer.id)}">
+                                    <label [ngClass]="{'text-success fw-bold': isAnswerSelected(question.id, answer.id)}">
                                         {{ answer.text }}
                                     </label>
                                 </div>
