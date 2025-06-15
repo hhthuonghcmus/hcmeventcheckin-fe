@@ -23,11 +23,11 @@ import { ApiResponse } from '../../../../interfaces/api-response.interface';
 import { Event } from '../../../../interfaces/event.interface';
 import { Topic } from '../../../../interfaces/topic.interface';
 import { TopicService } from '../../../../services/topic.service';
-import { RadioButton } from 'primeng/radiobutton';
 import { FileSelectEvent, FileUpload } from 'primeng/fileupload';
 import * as XLSX from 'xlsx';
 import { TableModule } from 'primeng/table';
 import { ToggleButton } from 'primeng/togglebutton';
+import { CheckboxModule  } from 'primeng/checkbox';
 
 @Component({
   selector: 'app-edit-event',
@@ -43,10 +43,10 @@ import { ToggleButton } from 'primeng/togglebutton';
     RouterLink,
     Textarea,
     DatePicker,
-    RadioButton,
     FileUpload,
     TableModule,
     ToggleButton,
+    CheckboxModule
   ],
   templateUrl: './edit-event.component.html',
   styleUrl: './edit-event.component.scss',
@@ -76,7 +76,8 @@ export class EditEventComponent {
 
     this.eventForm = this.formBuilder.group({
       name: ['', [Validators.required]],
-      isPrivate: [true, [Validators.required]],
+      isPrivate: [false, [Validators.required]],
+      allowAnonymousParticipant: [false, [Validators.required]],
       participants: [[]],
       isParticipantTableVisible: [false],
       location: [''],
@@ -95,6 +96,7 @@ export class EditEventComponent {
         this.eventForm.patchValue({
           name: event.name,
           isPrivate: event.isPrivate,
+          allowAnonymousParticipant: event.allowAnonymousParticipant,
           participants: event.participants,
           isParticipantTableVisible: false,
           location: event.location,
@@ -146,6 +148,7 @@ export class EditEventComponent {
   }
 
   confirm() {
+    console.log(this.eventForm.value)
     if (this.eventForm.invalid) {
       this.messageService.add({
         severity: 'error',

@@ -5,6 +5,7 @@ export interface Event {
   id: string;
   name: string;
   isPrivate: boolean;
+  allowAnonymousParticipant: boolean;
   participants: Participant[];
   location: string;
   description: string;

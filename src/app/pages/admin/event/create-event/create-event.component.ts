@@ -1,19 +1,15 @@
 import { Component } from '@angular/core';
 import {
-  AbstractControl,
   FormArray,
   FormBuilder,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
-  ValidationErrors,
-  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { map, Observable } from 'rxjs';
 import { ApiResponse } from '../../../../interfaces/api-response.interface';
-import { QuestionService } from '../../../../services/question.service';
 import { TopicService } from '../../../../services/topic.service';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -26,11 +22,11 @@ import { Textarea } from 'primeng/textarea';
 import { DatePicker } from 'primeng/datepicker';
 import { Topic } from '../../../../interfaces/topic.interface';
 import { EventService } from '../../../../services/event.service';
-import { RadioButton } from 'primeng/radiobutton';
 import { FileSelectEvent, FileUpload } from 'primeng/fileupload';
 import * as XLSX from 'xlsx';
 import { TableModule } from 'primeng/table';
 import { ToggleButton } from 'primeng/togglebutton';
+import { CheckboxModule } from 'primeng/checkbox';
 
 @Component({
   selector: 'app-create-event',
@@ -46,10 +42,10 @@ import { ToggleButton } from 'primeng/togglebutton';
     RouterLink,
     Textarea,
     DatePicker,
-    RadioButton,
     FileUpload,
     TableModule,
     ToggleButton,
+    CheckboxModule
   ],
   templateUrl: './create-event.component.html',
   styleUrl: './create-event.component.scss',
@@ -64,7 +60,7 @@ export class CreateEventComponent {
     private formBuilder: FormBuilder,
     private messageService: MessageService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.myTopics$ = this.topicService.getMyTopics().pipe(
@@ -76,7 +72,8 @@ export class CreateEventComponent {
 
     this.eventForm = this.formBuilder.group({
       name: ['', [Validators.required]],
-      isPrivate: [true, [Validators.required]],
+      isPrivate: [false, [Validators.required]],
+      allowAnonymousParticipant: [false, [Validators.required]],
       participants: [[]],
       isParticipantTableVisible: [false],
       location: [''],
