@@ -77,6 +77,10 @@
                 icon="pi pi-pencil"
                 [routerLink]="['/event/edit', event.id]"
               />
+              <p-button
+                icon="pi pi-download"
+                (click)="exportParticipantsToXlsx(event.id)"
+              />
             </div>
           </td>
         </tr>

@@ -137,6 +137,12 @@ export class EventService {
     );
   }
 
+  exportParticipantsToXlsx(eventId: string) {
+    return this.httpClient.get(API_BASE_URL + `event/export-participants-to-xlsx/${eventId}`, {
+      responseType: 'blob'
+    });
+  }
+
   // openVote(topicId: string) {
   //   return this.httpClient.get<ApiReponse>(
   //     API_BASE_URL + `event/open-vote/${topicId}`

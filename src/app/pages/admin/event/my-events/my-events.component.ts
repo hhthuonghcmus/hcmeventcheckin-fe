@@ -50,6 +50,20 @@ export class MyEventsComponent {
     return new Date(date1).getTime() > new Date(date2).getTime();
   }
 
+  exportParticipantsToXlsx(eventId: string) {
+    this.eventService.exportParticipantsToXlsx(eventId).subscribe(blob => {
+      const file = new Blob([blob], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      });
+
+      const fileName = 'Participants.xlsx';
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(file);
+      link.download = fileName;
+      link.click();
+    });
+  }
+
   // openVote(topicIndex: number) {
   //   var topic = this.myEvents.at(topicIndex);
   //   this.eventService.openVote(topic.id).subscribe((response: ApiReponse) => {
