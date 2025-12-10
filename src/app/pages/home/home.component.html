@@ -1,9 +1,26 @@
 <div *ngIf="!isLoggedIn" class="center-content">
-    <p-card styleClass="py-4 px-3 width: auto; max-width: 90vw;">
-        <div class="text-center">
-            <div class="mb-2 fs-4 text-secondary">Your lucky draw code:</div>
-            <h1 class="display-3 fw-bold text-primary">{{ luckyDrawCode }}</h1>
-            <p class="mt-3 text-secondary" *ngIf="!luckyDrawCode">No lucky draw code assigned</p>
+  <p-card styleClass="width: auto; max-width: 90vw;">
+    <div class="text-center">
+      <div *ngIf="luckyDrawCode; else prizesSearchTemplate">
+        <div class="mb-2 fs-4 text-secondary">Your lucky draw code:</div>
+        <h1 class="display-3 fw-bold text-primary">{{ luckyDrawCode }}</h1>
+      </div>
+
+      <ng-template #prizesSearchTemplate>
+        <p class="mb-2 fs-4 text-secondary">
+          Check out your prizes!
+        </p>
+        <div class="mt-4">
+          <p-button
+            styleClass="w-100"
+            size="large"
+            label="Search Now"
+            icon="pi pi-gift"
+            severity="primary"
+            (onClick)="showParticipateDialog()"
+          />
         </div>
-    </p-card>
+      </ng-template>
+    </div>
+  </p-card>
 </div>

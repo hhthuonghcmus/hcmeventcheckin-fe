@@ -81,9 +81,9 @@ export class CreateEventComponent {
       startTime: ['', Validators.required],
       luckyDrawStartTime: ['', Validators.required],
       luckyDrawEndTime: ['', Validators.required],
-      votingStartTime: ['', Validators.required],
-      votingEndTime: ['', Validators.required],
-      topicId: [null, Validators.required],
+      // votingStartTime: [''],
+      // votingEndTime: [''],
+      topicId: [null],
     });
   }
 

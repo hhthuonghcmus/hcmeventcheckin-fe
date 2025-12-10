@@ -50,6 +50,13 @@ export class EventService {
       data
     );
   }
+  
+  receivePrizeEvent(data: any) {
+    return this.httpClient.post<ApiResponse>(
+      `${this.apiUrl}/receive-prize`,
+      data
+    );
+  }
 
   participateEvent(data: any) {
     return this.httpClient.post<ApiResponse>(

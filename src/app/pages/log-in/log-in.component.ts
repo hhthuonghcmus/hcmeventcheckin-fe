@@ -16,7 +16,6 @@ import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { LOGGED_IN_USER_KEY } from '../../constants/cookie.constant';
 import { CookieService } from 'ngx-cookie-service';
-import { finalize } from 'rxjs';
 import { User } from '../../interfaces/user.interface';
 
 @Component({

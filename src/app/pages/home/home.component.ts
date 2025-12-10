@@ -7,11 +7,11 @@ import { Event } from '../../interfaces/event.interface';
 import { CardModule } from 'primeng/card';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/user.service';
-import { Router } from '@angular/router';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, CardModule],
+  imports: [CommonModule, CardModule, ButtonModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
@@ -60,5 +60,11 @@ export class HomeComponent {
         }
       }
     }
+  }
+
+  showParticipateDialog() {
+    // You can emit an event or use a shared service to trigger the dialog
+    // For now, we'll use a simple approach by dispatching a custom event
+    window.dispatchEvent(new CustomEvent('showParticipateDialog'));
   }
 }
