@@ -6,7 +6,7 @@
         formControlName="name"
         pSize="large"
         class="w-100"
-        title="Event Name"
+        title="Event name"
       />
       <label for="name"
         >Event name
@@ -54,7 +54,7 @@
             pSize="small"
             class="w-100"
             style="font-size: medium; padding-bottom: 8px"
-            title="Event Location"
+            title="Event location"
           />
           <label for="location">Location</label>
         </p-floatlabel>
@@ -68,7 +68,7 @@
             rows="5"
             pSize="small"
             class="w-100"
-            title="Event Description"
+            title="Event description"
           ></textarea>
           <label for="description">Description</label>
         </p-floatlabel>
@@ -126,15 +126,19 @@
               <tr>
                 <th>#</th>
                 <th>Name</th>
-                <th>Phone number</th>
-                <th>Lucky draw code</th>
+                <th>Email</th>
+                <th>Personal ID</th>
+                <th>Chair Id</th>
+                <th>Lucky Draw Code</th>
               </tr>
             </ng-template>
             <ng-template #body let-participant>
               <tr>
                 <td>{{ participants.value.indexOf(participant) + 1 }}</td>
                 <td>{{ participant.name }}</td>
-                <td>{{ participant.phoneNumber }}</td>
+                <td>{{ participant.companyEmail }}</td>
+                <td>{{ participant.personalId }}</td>
+                <td>{{ participant.chairId }}</td>
                 <td>{{ participant.luckyDrawCode }}</td>
               </tr>
             </ng-template>
@@ -146,7 +150,7 @@
 
   <div class="card p-3 d-flex gap-2">
     <div class="row d-flex align-items-center">
-      <span class="text-secondary">Lucky draw</span>
+      <span class="text-secondary">Check-in time</span>
 
       <div class="col-sm-12 col-md-4 mt-2">
         <p-floatlabel variant="in">
@@ -198,7 +202,7 @@
     </div>
 
     <div class="row d-flex align-items-center">
-      <span class="text-secondary">Voting</span>
+      <!-- <span class="text-secondary">Voting</span>
 
       <div class="col-sm-12 col-md-4 mt-2">
         <p-floatlabel variant="in">
@@ -268,7 +272,7 @@
             </small>
           </label>
         </p-floatlabel>
-      </div>
+      </div> -->
     </div>
   </div>
 

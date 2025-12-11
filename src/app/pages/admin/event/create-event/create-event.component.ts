@@ -17,7 +17,6 @@ import { ButtonModule } from 'primeng/button';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InputText } from 'primeng/inputtext';
 import { RippleModule } from 'primeng/ripple';
-import { Select } from 'primeng/select';
 import { Textarea } from 'primeng/textarea';
 import { DatePicker } from 'primeng/datepicker';
 import { Topic } from '../../../../interfaces/topic.interface';
@@ -34,7 +33,6 @@ import { CheckboxModule } from 'primeng/checkbox';
     CommonModule,
     InputText,
     FloatLabel,
-    Select,
     ReactiveFormsModule,
     FormsModule,
     ButtonModule,
@@ -60,7 +58,7 @@ export class CreateEventComponent {
     private formBuilder: FormBuilder,
     private messageService: MessageService,
     private router: Router
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.myTopics$ = this.topicService.getMyTopics().pipe(
@@ -81,9 +79,6 @@ export class CreateEventComponent {
       startTime: ['', Validators.required],
       luckyDrawStartTime: ['', Validators.required],
       luckyDrawEndTime: ['', Validators.required],
-      // votingStartTime: [''],
-      // votingEndTime: [''],
-      topicId: [null],
     });
   }
 
@@ -106,9 +101,11 @@ export class CreateEventComponent {
         jsonData.forEach((row: any) => {
           const propertyNames = Object.keys(row);
           this.participants.value.push({
-            name: row[propertyNames[0]],
-            phoneNumber: row[propertyNames[1]],
-            luckyDrawCode: row[propertyNames[2]],
+            name: String(row[propertyNames[0]] ?? ''),
+            companyEmail: String(row[propertyNames[1]] ?? ''),
+            personalId: String(row[propertyNames[2]] ?? ''),
+            chairId: String(row[propertyNames[3]] ?? ''),
+            luckyDrawCode: String(row[propertyNames[4]] ?? ''),
           });
         });
       };

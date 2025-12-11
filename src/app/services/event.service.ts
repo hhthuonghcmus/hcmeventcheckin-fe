@@ -30,7 +30,8 @@ export class EventService {
     return this.httpClient.post<ApiResponse>(`${this.apiUrl}/create`, event);
   }
 
-  update(eventId: string, event: Event) {
+  update(eventId: string, event: any) {
+    console.log('Updating event:', eventId, event);
     return this.httpClient.post<ApiResponse>(
       `${this.apiUrl}/update/${eventId}`,
       event
@@ -65,9 +66,9 @@ export class EventService {
     );
   }
 
-  getParticipatedEvent(phoneNumber: string) {
+  getParticipatedEvent(companyEmail: string) {
     return this.httpClient.get<ApiResponse>(
-      `${this.apiUrl}/get-participated-event/${phoneNumber}`
+      `${this.apiUrl}/get-participated-event/${companyEmail}`
     );
   }
 
@@ -137,10 +138,10 @@ export class EventService {
     return String.fromCharCode(65 + answerIndex);
   }
 
-  getLuckyDrawCodeByPhoneNumber(eventId: string, phoneNumber: string) {
+  getLuckyDrawCodeByCompanyEmail(eventId: string, companyEmail: string) {
     return this.httpClient.get<ApiResponse>(
       API_BASE_URL + `event/get-lucky-draw-code/${eventId}`,
-      { params: { phoneNumber } }
+      { params: { companyEmail } }
     );
   }
 

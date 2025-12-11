@@ -37,18 +37,18 @@ export class ManageEventParticipantsComponent {
     this.participants = this.event.participants;
   }
 
-  showQrCode(phoneNumber: string) {
-    if (!phoneNumber) {
+  showQrCode(email: string) {
+    if (!email) {
       this.messageService.add({
         severity: 'error',
         summary: 'QR Code Error',
-        detail: 'Phone number is required',
+        detail: 'Email is required',
       });
       return;
     }
     const requestData = {
       eventId: this.event.id,
-      phoneNumber: phoneNumber,
+      companyEmail: email,
     };
 
     this.eventService.getPrivateQrCodePngImageLink(requestData).subscribe({

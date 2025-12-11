@@ -9,7 +9,7 @@ import { MessageService } from 'primeng/api';
 
 interface Winner {
   name: string;
-  phoneNumber: string;
+  companyEmail: string;
   drawTime: Date;
 }
 
@@ -69,7 +69,7 @@ export class ManageEventLuckyDrawComponent implements OnInit {
 
         const newWinner: Winner = {
           name: winner.name,
-          phoneNumber: winner.phoneNumber,
+          companyEmail: winner.companyEmail,
           drawTime: new Date(),
         };
 

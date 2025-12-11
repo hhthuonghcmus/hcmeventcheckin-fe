@@ -1,6 +1,23 @@
 .center-content {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  position: relative;
+  top: 35vh;
   justify-content: center;
-  height: 100vh;
+  font-family: 'Gesco', sans-serif !important;
+  color: #c61717;
+  height: 90vh;
+}
+::ng-deep .custom-checkin-btn {
+  background-color: white !important;
+  color: #c61717 !important;
+  border: none !important;
+  width: 100% !important;
+  font-size: 2rem !important;
+  font-weight: bold !important;
+  font-family: 'Gesco', sans-serif !important;
+
+  &:hover {
+    background-color: #ffe6e6 !important;
+  }
 }

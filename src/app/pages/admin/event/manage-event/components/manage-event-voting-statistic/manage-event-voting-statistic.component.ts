@@ -88,7 +88,7 @@ export class ManageEventVotingStatisticComponent {
       .filter((x) => x.questionId === questionId)
       .map((x) => x.phoneNumber);
     const notVotedParticipants = this.event.participants.filter(
-      (participant) => votedPhoneNumbers.indexOf(participant.phoneNumber) === -1
+      (participant) => votedPhoneNumbers.indexOf(participant.companyEmail) === -1
     );
     chartDatasets[0].data.push(notVotedParticipants.length);
 
@@ -121,7 +121,7 @@ export class ManageEventVotingStatisticComponent {
       .filter((x) => x.questionId === questionId)
       .map((x) => x.phoneNumber);
     const notVotedParticipants = this.event.participants.filter(
-      (participant) => votedPhoneNumbers.indexOf(participant.phoneNumber) === -1
+      (participant) => votedPhoneNumbers.indexOf(participant.companyEmail) === -1
     );
 
     datasets[0].data.push(notVotedParticipants.length);

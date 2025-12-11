@@ -1,26 +1,93 @@
 <div *ngIf="!isLoggedIn" class="center-content">
-  <p-card styleClass="width: auto; max-width: 90vw;">
-    <div class="text-center">
-      <div *ngIf="luckyDrawCode; else prizesSearchTemplate">
-        <div class="mb-2 fs-4 text-secondary">Your lucky draw code:</div>
-        <h1 class="display-3 fw-bold text-primary">{{ luckyDrawCode }}</h1>
+  <div class="text-center">
+      <div *ngIf="showParticipateInfo; else participateTemplate">
+        <h2 class="fw-bold" style="color: #5b3f25 !important">Chúc Mừng</h2>
+        <h1 class="fw-bold display-5 text-uppercase">{{participant.name}}</h1>
+        <div class="m-4">
+          <span
+            class="fs-1 px-2 py-1"
+            style="color: white !important; background-color: #c61717;" >
+            ĐÃ NHẬN ĐƯỢC
+          </span>
+        </div>
+        <h2 class="fw-bold text-uppercase mb-4">{{participant.luckyDrawCode}}</h2>
+        <h3 style="color: #5b3f25 !important" >Số bàn {{participant.chairId}}</h3>
       </div>
 
-      <ng-template #prizesSearchTemplate>
-        <p class="mb-2 fs-4 text-secondary">
-          Check out your prizes!
-        </p>
+      <ng-template #participateTemplate>
         <div class="mt-4">
           <p-button
-            styleClass="w-100"
-            size="large"
-            label="Search Now"
-            icon="pi pi-gift"
+            styleClass="custom-checkin-btn"
+            label="CHECK-IN NOW"
             severity="primary"
             (onClick)="showParticipateDialog()"
           />
         </div>
       </ng-template>
     </div>
-  </p-card>
 </div>
+
+<!-- Participate Event Dialog -->
+<form [formGroup]="participateEventForm" (ngSubmit)="participateEvent()">
+  <p-dialog 
+    [(visible)]="isEventPINDialogVisible" 
+    [modal]="true" 
+    [styleClass]="'w-75'"
+    [style]="{ 'max-width': '300px' }" 
+    [dismissableMask]="true" 
+    [resizable]="false"
+    header="Please check in">
+    <div class="d-flex flex-column gap-2">
+      <p-floatlabel variant="on">
+        <input pInputText formControlName="pin" title="PIN" class="w-100" [readOnly]="true" />
+        <label for="pin">PIN</label>
+      </p-floatlabel>
+
+      <div class="text-danger">
+        <small *ngIf="participateEventForm.get('pin')?.hasError('required')">
+          (Required)
+        </small>
+        <small *ngIf="
+            participateEventForm.get('pin')?.hasError('minlength') ||
+            participateEventForm.get('pin')?.hasError('maxlength') ||
+            participateEventForm.get('pin')?.hasError('pattern')">
+          (6 digits)
+        </small>
+      </div>
+
+      <p-floatlabel variant="on">
+        <input pInputText formControlName="companyEmail" title="Company Email" class="w-100" />
+        <label for="companyEmail">Company Email</label>
+      </p-floatlabel>
+
+      <div class="text-danger">
+        <small *ngIf="participateEventForm.get('companyEmail')?.hasError('required')">
+          (Required)
+        </small>
+         <small *ngIf="participateEventForm.get('companyEmail')?.hasError('email')">
+          (Invalid email)
+        </small>
+      </div>
+
+      <p-floatlabel variant="on">
+        <input pInputText formControlName="personalId" title="Personal ID" class="w-100" />
+        <label for="personalId">Personal ID</label>
+      </p-floatlabel>
+
+      <div class="text-danger">
+        <small *ngIf="participateEventForm.get('personalId')?.hasError('required')">
+          (Required)
+        </small>
+        <small *ngIf="
+            participateEventForm.get('personalId')?.hasError('minlength') ||
+            participateEventForm.get('personalId')?.hasError('maxlength') ||
+            participateEventForm.get('personalId')?.hasError('pattern')">
+          (Invalid Personal ID)
+        </small>
+      </div>
+
+      <button title="Submit Button" pButton type="submit" label="Go"
+        [disabled]="participateEventForm.invalid"></button>
+    </div>
+  </p-dialog>
+</form>

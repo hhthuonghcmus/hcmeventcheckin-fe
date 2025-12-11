@@ -4,7 +4,7 @@
     <tr>
       <th>#</th>
       <th>Name</th>
-      <th>Phone number</th>
+      <th>Company Email</th>
       <th class="text-center">QR Code</th>
       <th class="text-center">Showed up</th>
     </tr>
@@ -13,9 +13,9 @@
     <tr>
       <td>{{ rowIndex + 1 }}</td>
       <td>{{ participant.name }}</td>
-      <td>{{ participant.phoneNumber }}</td>
+      <td>{{ participant.companyEmail }}</td>
       <td class="text-center">
-        <p-button icon="pi pi-qrcode" [rounded]="true" (onClick)="showQrCode(participant.phoneNumber)">
+        <p-button icon="pi pi-qrcode" [rounded]="true" (onClick)="showQrCode(participant.companyEmail)">
         </p-button>
       </td>
       <td class="text-center">

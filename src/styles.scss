@@ -1,5 +1,12 @@
 @import "primeicons/primeicons.css";
 
+@font-face {
+  font-family: 'Gesco';
+  src: url('/assets/1FTV-HF-Gesco.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 .w-fill {
     width: -webkit-fill-available;
   }

@@ -12,10 +12,6 @@ export interface Event {
   startTime: Date;
   luckyDrawStartTime: Date;
   luckyDrawEndTime: Date;
-  votingStartTime: Date;
-  votingEndTime: Date;
-  topicId: string;
   pin: string;
-
   topic: Topic;
 }

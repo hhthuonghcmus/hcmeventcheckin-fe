@@ -1,33 +1,32 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import {
-  ReactiveFormsModule,
-  FormsModule,
-  FormGroup,
-  FormBuilder,
-  Validators,
   FormArray,
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
 } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { MessageService } from 'primeng/api';
+import { map, Observable } from 'rxjs';
+import { ApiResponse } from '../../../../interfaces/api-response.interface';
+import { TopicService } from '../../../../services/topic.service';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
-import { DatePicker } from 'primeng/datepicker';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InputText } from 'primeng/inputtext';
 import { RippleModule } from 'primeng/ripple';
-import { Select } from 'primeng/select';
 import { Textarea } from 'primeng/textarea';
-import { map, Observable } from 'rxjs';
-import { MessageService } from 'primeng/api';
-import { EventService } from '../../../../services/event.service';
-import { ApiResponse } from '../../../../interfaces/api-response.interface';
-import { Event } from '../../../../interfaces/event.interface';
+import { DatePicker } from 'primeng/datepicker';
 import { Topic } from '../../../../interfaces/topic.interface';
-import { TopicService } from '../../../../services/topic.service';
+import { Event } from '../../../../interfaces/event.interface';
+import { EventService } from '../../../../services/event.service';
 import { FileSelectEvent, FileUpload } from 'primeng/fileupload';
 import * as XLSX from 'xlsx';
 import { TableModule } from 'primeng/table';
 import { ToggleButton } from 'primeng/togglebutton';
-import { CheckboxModule  } from 'primeng/checkbox';
+import { CheckboxModule } from 'primeng/checkbox';
 
 @Component({
   selector: 'app-edit-event',
@@ -35,7 +34,6 @@ import { CheckboxModule  } from 'primeng/checkbox';
     CommonModule,
     InputText,
     FloatLabel,
-    Select,
     ReactiveFormsModule,
     FormsModule,
     ButtonModule,
@@ -46,7 +44,7 @@ import { CheckboxModule  } from 'primeng/checkbox';
     FileUpload,
     TableModule,
     ToggleButton,
-    CheckboxModule
+    CheckboxModule,
   ],
   templateUrl: './edit-event.component.html',
   styleUrl: './edit-event.component.scss',
@@ -78,35 +76,36 @@ export class EditEventComponent {
       name: ['', [Validators.required]],
       isPrivate: [false, [Validators.required]],
       allowAnonymousParticipant: [false, [Validators.required]],
-      participants: [[]],
+      participants: this.formBuilder.array([]), // Changed from [[]] to this.formBuilder.array([])
       isParticipantTableVisible: [false],
       location: [''],
       description: [''],
       startTime: ['', Validators.required],
       luckyDrawStartTime: ['', Validators.required],
       luckyDrawEndTime: ['', Validators.required],
-      votingStartTime: ['', Validators.required],
-      votingEndTime: ['', Validators.required],
-      topicId: [null, Validators.required],
     });
 
     this.eventService.getById(this.eventId).subscribe({
       next: (response: ApiResponse) => {
         const event = response.data as Event;
+        
+        // Clear and populate the FormArray with existing participants
+        const participantsArray = this.participants;
+        participantsArray.clear();
+        event.participants.forEach(participant => {
+          participantsArray.push(this.formBuilder.group(participant));
+        });
+        
         this.eventForm.patchValue({
           name: event.name,
           isPrivate: event.isPrivate,
           allowAnonymousParticipant: event.allowAnonymousParticipant,
-          participants: event.participants,
           isParticipantTableVisible: false,
           location: event.location,
           description: event.description,
           startTime: new Date(event.startTime),
           luckyDrawStartTime: new Date(event.luckyDrawStartTime),
           luckyDrawEndTime: new Date(event.luckyDrawEndTime),
-          votingStartTime: new Date(event.votingStartTime),
-          votingEndTime: new Date(event.votingEndTime),
-          topicId: event.topicId,
         });
       },
       error: (error) => {
@@ -134,14 +133,17 @@ export class EditEventComponent {
         const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
         const jsonData = XLSX.utils.sheet_to_json(firstSheet);
 
-        this.participants.setValue([]);
+        // Clear the FormArray and add new items properly
+        this.participants.clear();
         jsonData.forEach((row: any) => {
           const propertyNames = Object.keys(row);
-          this.participants.value.push({
-            name: row[propertyNames[0]],
-            phoneNumber: row[propertyNames[1]],
-            luckyDrawCode: row[propertyNames[2]],
-          });
+          this.participants.push(this.formBuilder.group({
+            name: String(row[propertyNames[0]] ?? ''),
+            companyEmail: String(row[propertyNames[1]] ?? ''),
+            personalId: String(row[propertyNames[2]] ?? ''),
+            chairId: String(row[propertyNames[3]] ?? ''),
+            luckyDrawCode: String(row[propertyNames[4]] ?? ''),
+          }));
         });
       };
     }
@@ -153,35 +155,37 @@ export class EditEventComponent {
       this.messageService.add({
         severity: 'error',
         summary: 'Edit event',
-        detail: 'error',
+        detail: 'Please fill in all required fields',
       });
-    } else {
-      this.eventService.update(this.eventId, this.eventForm.value).subscribe({
-        next: (response: ApiResponse) => {
-          if (response['statusCode'] === 200) {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Edit event',
-              detail: 'Successfully',
-            });
+      return;
+    }
 
-            this.router.navigate(['event/my-events']);
-          } else {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Edit event',
-              detail: response['message'],
-            });
-          }
-        },
-        error: (error) => {
+    this.eventService.update(this.eventId, this.eventForm.value).subscribe({
+      next: (response: ApiResponse) => {
+        if (response['statusCode'] === 200) {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Edit event',
+            detail: 'Event updated successfully',
+          });
+
+          this.router.navigate(['event/my-events']);
+        } else {
           this.messageService.add({
             severity: 'error',
-            summary: 'Create event',
-            detail: error,
+            summary: 'Edit event',
+            detail: response['message'] || 'Failed to update event',
           });
-        },
-      });
-    }
+        }
+      },
+      error: (error) => {
+        console.error('Update error:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Edit event',
+          detail: error?.error?.message || 'Failed to update event',
+        });
+      },
+    });
   }
 }
