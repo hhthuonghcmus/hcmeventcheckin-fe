@@ -98,8 +98,13 @@ export class HomeComponent {
 
   participateEvent() {
     if (this.participateEventForm.valid) {
+      // Convert companyEmail to lowercase
+    const formData = {
+      ...this.participateEventForm.value,
+      companyEmail: this.participateEventForm.value.companyEmail.toLowerCase()
+    };
       this.eventService
-        .participateEvent(this.participateEventForm.value)
+        .participateEvent(formData)
         .subscribe({
           next: (response) => {
             if (response['statusCode'] === 200) {
