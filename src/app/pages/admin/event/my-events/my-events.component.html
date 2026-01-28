@@ -18,8 +18,8 @@
           <th>Name</th>
           <th class="text-center">PIN</th>
           <th class="text-center">Start time</th>
-          <th class="text-center">Lucky draw</th>
-          <th class="text-center">Voting</th>
+          <!-- <th class="text-center">Lucky draw</th>
+          <th class="text-center">Voting</th> -->
           <th class="text-center">Status</th>
           <th></th>
         </tr>
@@ -39,7 +39,7 @@
           <td class="text-center">
             {{ event.startTime | date : "HH:mm, dd-MMMM-yyyy " }}
           </td>
-          <td class="text-center">
+          <!-- <td class="text-center">
             <b>From</b>:
             {{ event.luckyDrawStartTime | date : "HH:mm, dd-MMMM-yyyy " }}
             <br />
@@ -51,7 +51,7 @@
             {{ event.votingStartTime | date : "HH:mm, dd-MMMM-yyyy " }}
             <br />
             <b>To</b>: {{ event.votingEndTime | date : "HH:mm, dd-MMMM-yyyy" }}
-          </td>
+          </td> -->
           <td class="text-center" [noWrap]="true">
             <p-badge
               *ngIf="isLarger(event.startTime, currentDate)"

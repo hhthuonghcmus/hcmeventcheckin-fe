@@ -210,10 +210,19 @@ export class HeaderComponent {
             return;
           }
 
+          // Find back camera - check for 'environment' facing mode or common back camera labels
           const preferredDevice =
-            scannerDevices.find((d) =>
-              /back|trás|rear|traseira|environment|ambiente/gi.test(d.label)
-            ) ?? scannerDevices[0];
+            scannerDevices.find((d) => {
+              // Check if device has facingMode constraint (works better on iOS)
+              const capabilities = (d as any).getCapabilities?.();
+              if (capabilities?.facingMode?.includes('environment')) {
+                return true;
+              }
+              // Fallback to label matching for various languages/devices
+              return /back|rear|environment|後|背|trasera|arrière|hinten|0$/gi.test(d.label);
+            }) ?? 
+            // If no back camera found by label, try to get the last camera (often back camera on mobile)
+            scannerDevices[scannerDevices.length - 1];
 
           if (preferredDevice) {
             setTimeout(() => {

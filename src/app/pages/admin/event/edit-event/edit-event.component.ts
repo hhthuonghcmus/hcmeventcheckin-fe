@@ -35,7 +35,6 @@ import { CheckboxModule  } from 'primeng/checkbox';
     CommonModule,
     InputText,
     FloatLabel,
-    Select,
     ReactiveFormsModule,
     FormsModule,
     ButtonModule,
@@ -85,8 +84,8 @@ export class EditEventComponent {
       startTime: ['', Validators.required],
       luckyDrawStartTime: ['', Validators.required],
       luckyDrawEndTime: ['', Validators.required],
-      votingStartTime: ['', Validators.required],
-      votingEndTime: ['', Validators.required],
+      // votingStartTime: [''],
+      // votingEndTime: [''],
       topicId: [null, Validators.required],
     });
 
@@ -104,8 +103,8 @@ export class EditEventComponent {
           startTime: new Date(event.startTime),
           luckyDrawStartTime: new Date(event.luckyDrawStartTime),
           luckyDrawEndTime: new Date(event.luckyDrawEndTime),
-          votingStartTime: new Date(event.votingStartTime),
-          votingEndTime: new Date(event.votingEndTime),
+          // votingStartTime: new Date(event.votingStartTime),
+          // votingEndTime: new Date(event.votingEndTime),
           topicId: event.topicId,
         });
       },
@@ -138,9 +137,9 @@ export class EditEventComponent {
         jsonData.forEach((row: any) => {
           const propertyNames = Object.keys(row);
           this.participants.value.push({
-            name: row[propertyNames[0]],
-            phoneNumber: row[propertyNames[1]],
-            luckyDrawCode: row[propertyNames[2]],
+            phoneNumber: String(row[propertyNames[0]]),
+            name: String(row[propertyNames[1]]),
+            jobTitle: String(row[propertyNames[2]] || ''),
           });
         });
       };

@@ -124,18 +124,16 @@
           >
             <ng-template #header>
               <tr>
-                <th>#</th>
+                <th>No.</th>
                 <th>Name</th>
-                <th>Phone number</th>
-                <th>Lucky draw code</th>
+                <th>Job title</th>
               </tr>
             </ng-template>
             <ng-template #body let-participant>
               <tr>
-                <td>{{ participants.value.indexOf(participant) + 1 }}</td>
-                <td>{{ participant.name }}</td>
                 <td>{{ participant.phoneNumber }}</td>
-                <td>{{ participant.luckyDrawCode }}</td>
+                <td>{{ participant.name }}</td>
+                <td>{{ participant.jobTitle }}</td>
               </tr>
             </ng-template>
           </p-table>
@@ -144,7 +142,7 @@
     </div>
   </div>
 
-  <div class="card p-3 d-flex gap-2">
+  <!-- <div class="card p-3 d-flex gap-2">
     <div class="row d-flex align-items-center">
       <span class="text-secondary">Lucky draw</span>
 
@@ -270,7 +268,7 @@
         </p-floatlabel>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <div class="d-flex align-items-center justify-content-end">
     <div class="d-flex align-items-center gap-2">

@@ -1,0 +1,57 @@
+::ng-deep .p-dialog {
+  width: auto !important;
+}
+
+::ng-deep .p-dialog .p-dialog-content {
+  padding: 0 !important;
+}
+
+.qr-code-content {
+  background-image: url('/assets/images/invitation-bg.jpg');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 1800px;
+  height: 3200px;
+  display: flex;
+  flex-direction: column !important;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.qr-code-image {
+  width: 25%;
+  height: auto;
+  display: block;
+}
+
+.participant-info {
+  text-align: center;
+  height: 18%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  font-family: 'Montserrat', sans-serif;
+  color: #FFE9A3;
+  
+  h1 {
+    margin: 0;
+    font-weight: 800;
+  }
+  
+  p {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+  }
+}
+
+.hidden-invitation-container {
+  position: fixed;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  pointer-events: none;
+  z-index: -9999;
+  overflow: hidden;
+}

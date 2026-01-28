@@ -83,7 +83,7 @@ export class CreateEventComponent {
       luckyDrawEndTime: ['', Validators.required],
       // votingStartTime: [''],
       // votingEndTime: [''],
-      topicId: [null],
+      topicId: [null, Validators.required],
     });
   }
 
@@ -106,9 +106,9 @@ export class CreateEventComponent {
         jsonData.forEach((row: any) => {
           const propertyNames = Object.keys(row);
           this.participants.value.push({
-            name: row[propertyNames[0]],
-            phoneNumber: row[propertyNames[1]],
-            luckyDrawCode: row[propertyNames[2]],
+            phoneNumber: row[propertyNames[0]],
+            name: row[propertyNames[1]],
+            jobTitle: row[propertyNames[2]],
           });
         });
       };
