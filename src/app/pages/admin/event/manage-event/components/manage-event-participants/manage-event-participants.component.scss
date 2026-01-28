@@ -1,55 +1,68 @@
+// Variables
+$invitation-width: 1800px;
+$invitation-height: 3200px;
+$participant-info-height: 18%;
+$spacer-height: 15%;
+$qr-code-width: 24%;
+$text-color: #ffe9a3;
+
+// Dialog overrides
 ::ng-deep .p-dialog {
   width: auto !important;
+
+  .p-dialog-content {
+    padding: 0 !important;
+  }
 }
 
-::ng-deep .p-dialog .p-dialog-content {
-  padding: 0 !important;
-}
-
+// Invitation card styles
 .qr-code-content {
-  background-image: url('/assets/images/invitation-bg.jpg');
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-  width: 1800px;
-  height: 3200px;
+  width: $invitation-width;
+  height: $invitation-height;
   display: flex;
-  flex-direction: column !important;
+  flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  background: url('/assets/images/invitation-bg.jpg') center / contain no-repeat;
 }
 
 .qr-code-image {
-  width: 25%;
+  width: $qr-code-width;
   height: auto;
   display: block;
 }
 
 .participant-info {
-  text-align: center;
-  height: 18%;
+  height: $participant-info-height;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  text-align: center;
   font-family: 'Montserrat', sans-serif;
-  color: #FFE9A3;
-  
+  color: $text-color;
+
   h1 {
     margin: 0;
+    font-size: 5.4rem;
     font-weight: 800;
   }
-  
+
   p {
     margin: 0;
-    font-size: 1.3rem;
+    font-size: 3rem;
     font-weight: 600;
   }
 }
 
+.spacer {
+  height: $spacer-height;
+}
+
+// Hidden container for bulk generation
 .hidden-invitation-container {
   position: fixed;
-  left: 0;
   top: 0;
+  left: 0;
   opacity: 0;
   pointer-events: none;
   z-index: -9999;
